@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2021.9.22)  22 SEP 2021 09:23
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2021.9.22)  22 SEP 2021 09:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -425,9 +425,27 @@ Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 \multirow@cntb=\count309
 \multirow@dima=\skip60
 \bigstrutjot=\dimen181
+) (/Users/kholsman/Library/TinyTeX/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen182
+\WF@size=\dimen183
+\c@WF@wrappedlines=\count310
+\WF@box=\box61
+\WF@everypar=\toks25
+Package: wrapfig 2003/01/31  v 3.6
+) (/Users/kholsman/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count311
+\float@exts=\toks26
+\float@box=\box62
+\@float@everytoks=\toks27
+\@floatcapt=\box63
+) (/Users/kholsman/Library/TinyTeX/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
+\everycr=\toks28
+\minrowclearance=\skip61
 )
 
-! LaTeX Error: File `wrapfig.sty' not found.
+! LaTeX Error: File `pdflscape.sty' not found.
 
 Type X to quit or <RETURN> to proceed,
 or enter new name. (Default extension: sty)
@@ -436,13 +454,13 @@ Enter file name:
 ! Emergency stop.
 <read *> 
          
-l.66 \usepackage
-                {float}^^M 
+l.69 \usepackage
+                {tabu}^^M 
 Here is how much of TeX's memory you used:
- 15327 strings out of 478492
- 272968 string characters out of 5861016
+ 15506 strings out of 478492
+ 275508 string characters out of 5861016
  656835 words of memory out of 5000000
- 35490 multiletter control sequences out of 15000+600000
+ 35657 multiletter control sequences out of 15000+600000
  403806 words of font info for 30 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  87i,0n,95p,313b,267s stack positions out of 5000i,500n,10000p,200000b,80000s

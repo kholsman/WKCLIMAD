@@ -4,7 +4,7 @@ This repository contains R code and Rdata files for working with
 WKCLIMAD data and responses. WKCLIMAD is an ICES workshop aimed at
 exploring how can the short-, medium-, and long-term influences of
 climate change on aquaculture, fisheries, and ecosystems be accounted
-for in ICES Advice?
+for in ICES Advice.
 
 The workshop is chaired by: Mark Dickey-Collas, Kirstin Kari Holsman,
 and Michael Rust. More information can be found
