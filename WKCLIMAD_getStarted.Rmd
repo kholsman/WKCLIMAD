@@ -1,0 +1,60 @@
+---
+title: "WKCLIMAD"
+author: 
+output:
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
+---
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ knitr::opts_chunk$set(echo = T, fig.align="center")
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+     # --------------------------------------
+    # SETUP WORKSPACE
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/PEEC_Energetics"
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+    
+    # --------------------------------------
+    
+   
+ 
+```
+
+
+# 1. Overview
+
+This repository contains R code and Rdata files for working with WKCLIMAD data and responses....
+
+## 1.1. Resources
+
+
+
+
