@@ -13,8 +13,8 @@
   
   # Set up file paths
   #----------------------------------------
-  data.in            <-  file.path(code.path,"data/in")
-  data.out           <-  file.path(code.path,"data/out")
+  data.in            <-  file.path("Data/in")
+  data.out           <-  file.path("Data/out")
   
   if(!dir.exists(data.out))
     dir.create(data.out)
@@ -66,7 +66,10 @@
   Fig6_1_color_ramp  <- colorRampPalette(c(labelcol6(9)[2:9]))
   
   precip_col         <- colorRampPalette(RColorBrewer::brewer.pal(11, "BrBG"))
+  
+  sea_ice_col        <- colorRampPalette(c(RColorBrewer::brewer.pal(11, "BrBG")[11:7],"white"))
   sea_ice_col        <- colorRampPalette(sea_ice_col(20)[c(1,1,1,1,1,1:19)])
+  
   SST_col            <- colorRampPalette(c("white",RColorBrewer::brewer.pal(9, "YlOrRd")[2:9]))
   tx40_col           <- colorRampPalette(c("white",RColorBrewer::brewer.pal(9, "YlOrRd")))
   mnT_col            <- colorRampPalette(rev(c(rev(RColorBrewer::brewer.pal(9, "YlOrRd")),

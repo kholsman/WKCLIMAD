@@ -2,20 +2,6 @@
 title: "WKCLIMAD"
 author: 
 output:
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -24,6 +10,20 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -37,9 +37,7 @@ output:
     # SETUP WORKSPACE
 
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()  #"~/GitHub_new/PEEC_Energetics"
-    
-    # loads packages, data, setup, etc.
+   # loads packages, data, setup, etc.
     suppressWarnings(source("R/make.R"))
     
     # --------------------------------------
@@ -53,7 +51,7 @@ output:
 
 This repository contains R code and Rdata files for working with WKCLIMAD data and responses. WKCLIMAD is an ICES workshop aimed at exploring how can the short-, medium-, and long-term influences of climate change on aquaculture, fisheries, and ecosystems be accounted for in ICES Advice?
 
-The workshop is chaired by: Mark Dickey-Collas, Kirstin Kari Holsman, and Michael Rust.
+The workshop is chaired by: Mark Dickey-Collas, Kirstin Kari Holsman, and Michael Rust. More information can be found here:https://www.ices.dk/community/groups/Pages/WKCLIMAD.aspx
 
 ## Summary:
 As managers, policy-makers, and other stakeholders become increasingly aware of the need to consider climate impacts, this workshop will develop a proposal for an operational climate-aware advisory framework. Experts are invited to join WKCLIMAD to review the recent and emergent analyses of key climate hazards to aquaculture, fisheries, and ecosystems.
@@ -62,11 +60,14 @@ The workshop will outline actionable strategies and approaches that can be taken
 
 The kick off meeting will take place on the 21 June 2021, and participants will work via correspondence prior to the online meetings taking place 29–30 September and 18–20 October 2021.
 
-Registration is now closed. Selected participants will be announced by 15 June 2021​.
+Registration is now closed. Selected participants will be announced by 15 June 2021.
 
-We expect this to be a popular workshop and therefore may have to limit the number of participants. If the workshop is oversubscribed, ICES reserves the right, in consultation with the workshop chairs, to select the final workshop participants based on their expertise, and equitable makeup of the workshop.​
+We expect this to be a popular workshop and therefore may have to limit the number of participants. If the workshop is oversubscribed, ICES reserves the right, in consultation with the workshop chairs, to select the final workshop participants based on their expertise, and equitable makeup of the workshop.
 
 
+# 2. Code overview
+
+In August 2021 multiple experts provided a rapid assessment of climate impacts via a Delphi approach. The code below analyses the output from that activity and produces the plots and results summarized in the WKCLIMAD report.
 
 
 ```{r makeReadME, echo=FALSE,eval=F, include =F}
