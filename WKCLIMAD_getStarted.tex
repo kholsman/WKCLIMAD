@@ -181,8 +181,14 @@ WKCLIMAD report. The code below will generate the following plots:
 \caption{Results by category for Fisheries}
 \end{figure}
 
+To generate the plots above run the following code in R (be sure your
+workspace is within your local \texttt{WKCLIMAD} folder):
+
 \begin{Shaded}
 \begin{Highlighting}[]
+   \CommentTok{\# getwd()  should return something like:}
+   \CommentTok{\# "/Users/kholsman/Documents/GitHub/WKCLIMAD"}
+
    \CommentTok{\# loads packages, data, setup, etc.}
     \FunctionTok{suppressWarnings}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
     

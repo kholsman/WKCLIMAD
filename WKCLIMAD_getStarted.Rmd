@@ -64,8 +64,13 @@ In August 2021 multiple experts provided a rapid assessment of climate impacts v
 
 ![Results by category for Fisheries](Figs/Fig3.png){width=100%}
 
+To generate the plots above run the following code in R (be sure your workspace is within your local `WKCLIMAD` folder):
+
 ```{r plotResults, echo=TRUE, eval=F, include =T}
- 
+
+   # getwd()  should return something like:
+   # "/Users/kholsman/Documents/GitHub/WKCLIMAD"
+
    # loads packages, data, setup, etc.
     suppressWarnings(source("R/make.R"))
     
