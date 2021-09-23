@@ -36,6 +36,7 @@ lib_list <- c(
   
   # These for making plots:
   "RColorBrewer",
+"stringr",
   "ggplot2", 
   "mgcv",
   "cowplot",               # 

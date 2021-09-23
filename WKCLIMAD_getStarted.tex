@@ -161,12 +161,24 @@ makeup of the workshop.
 In August 2021 multiple experts provided a rapid assessment of climate
 impacts via a Delphi approach. The code below analyses the output from
 that activity and produces the plots and results summarized in the
-WKCLIMAD report. The code below will generate the following plot:
+WKCLIMAD report. The code below will generate the following plots:
 
 \begin{figure}
 \centering
 \includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Fig1.png}
 \caption{Results of the first round of Delphi surveys.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Fig2.png}
+\caption{Results by category for Aquaculture}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Fig3.png}
+\caption{Results by category for Fisheries}
 \end{figure}
 
 \begin{Shaded}
@@ -207,7 +219,8 @@ WKCLIMAD report. The code below will generate the following plot:
 \NormalTok{    smry\_w }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(smry\_w, smry\_conf}\SpecialCharTok{\%\textgreater{}\%}
                       \FunctionTok{select}\NormalTok{(focus,time\_period,category, mnConf),}
                     \AttributeTok{by=}\FunctionTok{c}\NormalTok{(}\StringTok{"focus"}\NormalTok{,}\StringTok{"time\_period"}\NormalTok{,}\StringTok{"category"}\NormalTok{))}
-
+\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{cat\_wrap }\OtherTok{\textless{}{-}}\NormalTok{ stringr}\SpecialCharTok{::}\FunctionTok{str\_wrap}\NormalTok{(smry\_w}\SpecialCharTok{$}\NormalTok{category, }\AttributeTok{width=}\DecValTok{30}\NormalTok{)}
+  
 \NormalTok{   p }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
                                              \AttributeTok{y     =}\NormalTok{ likelihood,}
                                              \AttributeTok{color =}\NormalTok{ mnConf,}
@@ -221,16 +234,29 @@ WKCLIMAD report. The code below will generate the following plot:
     \FunctionTok{print}\NormalTok{(p)}
     \FunctionTok{dev.off}\NormalTok{()}
     
-\NormalTok{  p2 }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w,}
+\NormalTok{    p2\_aqua }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{),}
                             \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}\AttributeTok{color=}\NormalTok{mnConf,}\AttributeTok{shape=}\NormalTok{focus))}\SpecialCharTok{+}
       \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(focus}\SpecialCharTok{\textasciitilde{}}\NormalTok{category)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
        
     \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig2.png"}\NormalTok{, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p2)}
+    \FunctionTok{print}\NormalTok{(p2\_aqua)}
     \FunctionTok{dev.off}\NormalTok{()}
+    
+\NormalTok{    p2\_fish }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{),}
+                            \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}\AttributeTok{color=}\NormalTok{mnConf,}\AttributeTok{shape=}\NormalTok{focus))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
+      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
+    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig3.png"}\NormalTok{, }\AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(p2\_fish)}
+    \FunctionTok{dev.off}\NormalTok{()}
+    
+    \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/aquaculture\_cats.csv"}\NormalTok{,}
+              \FunctionTok{unique}\NormalTok{(smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(category)))}
+    \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/fishery\_cats.csv"}\NormalTok{,}
+              \FunctionTok{unique}\NormalTok{(smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(category)))}
    
-\NormalTok{    datIN      }\OtherTok{\textless{}{-}}\NormalTok{ aqua\_dat}
+   
    \CommentTok{\# add type (and range)}
 \end{Highlighting}
 \end{Shaded}

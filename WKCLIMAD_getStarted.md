@@ -43,10 +43,18 @@ makeup of the workshop.
 In August 2021 multiple experts provided a rapid assessment of climate
 impacts via a Delphi approach. The code below analyses the output from
 that activity and produces the plots and results summarized in the
-WKCLIMAD report. The code below will generate the following plot:
+WKCLIMAD report. The code below will generate the following plots:
 
 <figure>
 <img src="Figs/Fig1.png" style="width:65.0%" alt="Results of the first round of Delphi surveys." /><figcaption aria-hidden="true">Results of the first round of Delphi surveys.</figcaption>
+</figure>
+
+<figure>
+<img src="Figs/Fig2.png" style="width:100.0%" alt="Results by category for Aquaculture" /><figcaption aria-hidden="true">Results by category for Aquaculture</figcaption>
+</figure>
+
+<figure>
+<img src="Figs/Fig3.png" style="width:100.0%" alt="Results by category for Fisheries" /><figcaption aria-hidden="true">Results by category for Fisheries</figcaption>
 </figure>
 
 ``` r
@@ -86,7 +94,8 @@ WKCLIMAD report. The code below will generate the following plot:
     smry_w <- merge(smry_w, smry_conf%>%
                       select(focus,time_period,category, mnConf),
                     by=c("focus","time_period","category"))
-
+    smry_w$cat_wrap <- stringr::str_wrap(smry_w$category, width=30)
+  
    p <-  ggplot()+geom_point(data=smry_w,aes(x     = magnitude,
                                              y     = likelihood,
                                              color = mnConf,
@@ -100,15 +109,28 @@ WKCLIMAD report. The code below will generate the following plot:
     print(p)
     dev.off()
     
-  p2 <- ggplot()+geom_point(data=smry_w,
+    p2_aqua <- ggplot()+geom_point(data=smry_w%>%filter(focus=="aquaculture"),
                             aes(x=magnitude,y=likelihood,color=mnConf,shape=focus))+
       scale_color_viridis_c()+
-      facet_wrap(focus~category)+theme_minimal()
+      facet_wrap(.~cat_wrap)+theme_minimal()+ theme(strip.text = element_text(size = 5))
        
     png("Figs/Fig2.png", width = 8, height =8, units = "in",res = 350)
-    print(p2)
+    print(p2_aqua)
     dev.off()
+    
+    p2_fish <- ggplot()+geom_point(data=smry_w%>%filter(focus=="fisheries"),
+                            aes(x=magnitude,y=likelihood,color=mnConf,shape=focus))+
+      scale_color_viridis_c()+
+      facet_wrap(.~cat_wrap)+theme_minimal()+ theme(strip.text = element_text(size = 5))
+    png("Figs/Fig3.png", width = 8, height =8, units = "in",res = 350)
+    print(p2_fish)
+    dev.off()
+    
+    write.csv(file="Data/out/aquaculture_cats.csv",
+              unique(smry_w%>%filter(focus=="aquaculture")%>%select(category)))
+    write.csv(file="Data/out/fishery_cats.csv",
+              unique(smry_w%>%filter(focus=="fisheries")%>%select(category)))
    
-    datIN      <- aqua_dat
+   
    # add type (and range)
 ```
