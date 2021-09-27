@@ -59,7 +59,6 @@ We expect this to be a popular workshop and therefore may have to limit the numb
 In August 2021 multiple experts provided a rapid assessment of climate impacts via a Delphi approach. The code below analyses the output from that activity and produces the plots and results summarized in the WKCLIMAD report. The code below will generate the following plots:
 
 ![Results of the first round of Delphi surveys.](Figs/Fig1.png){width=65%}
-
 ![Results by category for Aquaculture](Figs/Fig2.png){width=100%}
 
 ![Results by category for Fisheries](Figs/Fig3.png){width=100%}
