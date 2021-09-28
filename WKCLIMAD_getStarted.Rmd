@@ -103,7 +103,13 @@ To generate the plots above run the following code in R (be sure your workspace 
                                  select(focus,time_period,category,type, se), 
                                key = type, value = se)
     smry_wse    <- smry_wse%>%rename(likelihoodSE=likelihood,magnitudeSE=magnitude)
+    smry_wsd    <- tidyr::spread(smry%>%
+                                 select(focus,time_period,category,type, sd), 
+                               key = type, value = sd)
+    smry_wsd    <- smry_wsd%>%rename(likelihoodSD=likelihood,magnitudeSD=magnitude)
     smry_w <- merge(smry_w,smry_wse,
+                    by=c("focus","time_period","category"))
+      smry_w <- merge(smry_w,smry_wsd,
                     by=c("focus","time_period","category"))
     smry_conf <- tidyr::spread(smry%>%
                                  select(focus,time_period,category,type, mn_conf), 
@@ -113,11 +119,13 @@ To generate the plots above run the following code in R (be sure your workspace 
     smry_w <- merge(smry_w, smry_conf%>%
                       select(focus,time_period,category, mnConf),
                     by=c("focus","time_period","category"))
-   
+    smry_w$likelihoodCV <- 100*smry_w$likelihoodSD/smry_w$likelihood
+    smry_w$magnitudeCV  <- 100*smry_w$magnitudeSD/smry_w$magnitude
     smry_w$category <- gsub("Change in ", "", smry_w$category)
     smry_w$category <- gsub("Changes in ", "", smry_w$category)
     smry_w$category <- gsub("Changes to ", "", smry_w$category)
     smry_w$cat_wrap <- stringr::str_wrap(smry_w$category, width=30)
+    
     mult<-1.95
     smry_w$ylower <- smry_w$likelihood-mult*smry_w$likelihoodSE
     smry_w$yupper <- smry_w$likelihood+mult*smry_w$likelihoodSE
@@ -198,11 +206,11 @@ To generate the plots above run the following code in R (be sure your workspace 
     # now plot the top five most variable (based on SE)
     #-------------------------------------------------
     sub <- aqua #%>%filter(time_period=="long-term")
-    cc  <- which(sub$likelihoodSE>quantile(sub$likelihoodSE)[4]&sub$magnitudeSE>quantile(sub$magnitudeSE)[4])
+    cc  <- which(sub$likelihoodCV>quantile(sub$likelihoodCV)[4]&sub$magnitudeCV>quantile(sub$magnitudeCV)[4])
     highest_aquaSE <- aqua[which(aqua$category%in%sub[cc,]$category),]
     
     sub  <- fish#%>%filter(time_period=="long-term")
-    cc   <- which(sub$likelihoodSE>quantile(sub$likelihoodSE)[4]&sub$magnitudeSE>quantile(sub$magnitudeSE)[4])
+    cc  <- which(sub$likelihoodCV>quantile(sub$likelihoodCV)[4]&sub$magnitudeCV>quantile(sub$magnitudeCV)[4])
     highest_fishSE <- fish[which(fish$category%in%sub[cc,]$category),]
     
     # plot the top set of fisheries 
