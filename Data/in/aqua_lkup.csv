@@ -1,32 +1,34 @@
-category,short,short2
-Catastrophic effects (i.e. death) on cultured species,Catastrophic effects on cultured species,mortality
-Change in  habitat area suitable for aquaculture,habitat area suitable for aquaculture,suitable habitat
-Change in ability to access facility (days per year),ability to access facility (days per year),facility access
-Change in availability of terrestrial ingredients for fish feeds,availability of terrestrial ingredients for fish feeds,terrestrial feed
-Change in frequency of damage to equipment/facilities ,frequency of damage to equipment/facilities ,equipment/facility damage
-"Change in location of shore based processing facilities, docks, distribution centers","location of shore based processing facilities, docks, distribution centers",location of shore based processing facilities
-"Change in range of non-target species which impact aquaculture such as marine mammals, predators, protected species etc.","range of non-target species which impact aquaculture such as marine mammals, predators, protected species etc.",non-target species
-Change in seafood quality post harvest,seafood quality post harvest,seafood quality (post harvest)
-Change in seafood quality pre harvest,seafood quality pre harvest,seafood quality (pre-harvest)
-Change in target culture species range expansion/contraction,target culture species range expansion/contraction,range expansion/contraction
-Change in terrestrial crop production and impact on demand for aquaculture as food source,terrestrial crop production and impact on demand for aquaculture as food source,aquaculture demand
-Change in the amount or toxicity of pollutants released into water/air.,the amount or toxicity of pollutants released into water/air.,toxicity/ pollutants
-Changes in  assimilation of fish waste,assimilation of fish waste,waste assimilation
-Changes in  reproduction and growth,reproduction and growth,reproduction & growth
-Changes in availability of natural feed for filter feeders (phytoplankton),availability of natural feed for filter feeders (phytoplankton),avail. natural feed
-"Changes in availability of ocean based feed ingredients (fish meal, fish oil) ","availability of ocean based feed ingredients (fish meal, fish oil) ",avail. of marine feed
-Changes in Dissolved Oxygen levels,Dissolved Oxygen levels,DO
-Changes in distribution of broodstock and spawner timing,distribution of broodstock and spawner timing,broodstock (cultured)
-Changes in distribution of wild broodstock,distribution of wild broodstock,wild broodstock
-Changes in growth,growth,growth
-"Changes in nutrient availability for seaweed (N, P, K)","nutrient availability for seaweed (N, P, K)",nutrient avail. for seaweed
-Changes in pathogen and parasite presence ,pathogen and parasite presence ,pathogens & parasites 
-Changes in pathogen/disease dynamics,pathogen/disease dynamics,pathogen/disease dynamics
-Changes in spawning timing,spawning timing,spawning timing
-Changes in sublethal effects other than growth or disease susceptibility,sublethal effects other than growth or disease susceptibility,sublethal effects
-Changes in survival,survival,survival
-Changes in susceptibility to disease,susceptibility to disease,susceptibility to disease
-Changes in water chemistry/turbidity/salinity (e.g. from erosion/flooding) ,water chemistry/turbidity/salinity (e.g. from erosion/flooding) ,water chemistry
-Changes in water quality dynamics,water quality dynamics,water quality dynamics
-Changes in wild seed production/juvenile availability ,wild seed production/juvenile availability ,wild seed production
-Changes to normal phytoplankton bloom timing/location ,phytoplankton bloom timing/location ,phytoplankton blooms 
+Aqua1 category,Aqua2 category,short,short2
+Catastrophic effects (i.e. death) on cultured species, Changes in Catastrophic effects (i.e. death) on cultured species ,Catastrophic effects on cultured species,mortality
+Change in  habitat area suitable for aquaculture, Changes in Habitat area suitable for aquaculture ,habitat area suitable for aquaculture,suitable habitat
+Change in ability to access facility (days per year), Changes in Ability to access facility (days per year) ,ability to access facility (days per year),facility access (d/y)
+Change in availability of terrestrial ingredients for fish feeds, Changes in Availabitly of terrestrial ingredients for fish feeds ,availability of terrestrial ingredients for fish feeds,terrestrial feed
+Change in frequency of damage to equipment/facilities , Changes in Frequency of damage to aquipment/facilities ,frequency of damage to equipment/facilities ,equipment/facility damage
+"Change in location of shore based processing facilities, docks, distribution centers"," Changes in Location of shore based processing facilities, docks, distribution centers ","location of shore based processing facilities, docks, distribution centers",location of shore based processing facilities
+"Change in range of non-target species which impact aquaculture such as marine mammals, predators, protected species etc.", Changes in Range of non target species which impact aquaculture ,"range of non-target species which impact aquaculture such as marine mammals, predators, protected species etc.",non-target species
+Change in seafood quality post harvest, Changes in Seafood quality post harvest ,seafood quality post harvest,seafood quality (post harvest)
+Change in seafood quality pre harvest, Changes in Seafood quality pre-harvest ,seafood quality pre harvest,seafood quality (pre-harvest)
+Change in target culture species range expansion/contraction, Changes in Target culture species range expansion/contraction ,target culture species range expansion/contraction,range expansion/contraction
+Change in terrestrial crop production and impact on demand for aquaculture as food source, Changes in Terrestrial crop production and impact on demand for aquaculture as a food source ,terrestrial crop production and impact on demand for aquaculture as food source,aquaculture demand
+Change in the amount or toxicity of pollutants released into water/air., Changes in The amount or toxicity of pollutants released into water/air ,the amount or toxicity of pollutants released into water/air.,toxicity/ pollutants
+Changes in  assimilation of fish waste, Changes in assimilation of fish waste ,assimilation of fish waste,waste assimilation
+Changes in  reproduction and growth, Changes in Reproduction and Growth ,reproduction and growth,reproduction & growth
+Changes in availability of natural feed for filter feeders (phytoplankton), Changes in availabitly of natural feed for filter feeders (phytoplankton) ,availability of natural feed for filter feeders (phytoplankton),avail. natural feed
+"Changes in availability of ocean based feed ingredients (fish meal, fish oil) "," Changes in Availability of ocean based ocean based feed ingredients (fish meal, fish oil) ","availability of ocean based feed ingredients (fish meal, fish oil) ",avail. of marine feed
+Changes in Dissolved Oxygen levels, Changes in Dissolved O2 levels ,Dissolved Oxygen levels,DO
+Changes in distribution of broodstock and spawner timing, Changes in Distribution of broodstock and spawner timing ,distribution of broodstock and spawner timing,broodstock (cultured)
+Changes in distribution of wild broodstock, Changes in Distribution of wild broodstock ,distribution of wild broodstock,wild broodstock
+Changes in growth, Changes in Growth ,growth,growth
+"Changes in nutrient availability for seaweed (N, P, K)"," Changes in Nutrient availability for seaweed (N, P, K) ","nutrient availability for seaweed (N, P, K)",nutrient avail. for seaweed
+Changes in pathogen and parasite presence , Changes in Pathogen and parasite presence ,pathogen and parasite presence ,pathogens & parasites 
+Changes in pathogen/disease dynamics, Changes in Pathogen disease dynamics ,pathogen/disease dynamics,pathogen/disease dynamics
+Changes in spawning timing, Changes in Spawning timing ,spawning timing,spawning timing
+Changes in sublethal effects other than growth or disease susceptibility, Changes in Other sublethal effects other than growth or disease susceptibillity ,sublethal effects other than growth or disease susceptibility,sublethal effects
+Changes in survival, Changes in Survival ,survival,survival
+Changes in susceptibility to disease, Changes in Susceptibility to disease ,susceptibility to disease,susceptibility to disease
+Changes in water chemistry/turbidity/salinity (e.g. from erosion/flooding) , Changes in Water chemistry/turbidity/salinity (e.g. from erosion/flooding) ,water chemistry/turbidity/salinity (e.g. from erosion/flooding) ,water chemistry
+Changes in water quality dynamics, Changes in Water qualitey dynamics ,water quality dynamics,water quality dynamics
+Changes in wild seed production/juvenile availability , Changes in Wild seed production/juvenile availability ,wild seed production/juvenile availability ,wild seed production
+Changes to normal phytoplankton bloom timing/location , Changes in normal phytoplankton bloom timing/location ,phytoplankton bloom timing/location ,phytoplankton blooms 
+NA, Changes in Ocean Acidification ,Ocean Acidification ,OA
+NA, Changes in HABs ,HABs,HABs

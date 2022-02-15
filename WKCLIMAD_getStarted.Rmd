@@ -84,6 +84,17 @@ To generate the plots above run the following code in R (be sure your workspace 
     long_a$focus <- "aquaculture"
     long_f$focus <- "fisheries"
     
+    # round 2 data:
+    long_a2 <- getData(aqua2_dat,rmMeanScore=T, splitIN = "\t",adjIN = 0)
+    long_f2 <- getData(fish2_dat,rmMeanScore=F)
+    long_a2$focus <- "aquaculture"
+    long_f2$focus <- "fisheries"
+    
+    # mitigation and adaptation
+    long_adapt_fish   <- getData_adapt(adapt_fish,adjIN = 4)
+    long_adapt_aqua   <- getData_adapt(adapt_aqua,adjIN = 4)
+    long_mitigat2     <- getData_mitig(mitigat2_dat,adjIN = 4)
+      
     # combine into single long format:
     long <- rbind(long_a,long_f)
     
