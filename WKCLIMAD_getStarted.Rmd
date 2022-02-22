@@ -79,16 +79,65 @@ To generate the plots above run the following code in R (be sure your workspace 
     
     # reshape the data into long-format:
     # --------------------------------------
-    long_a <- getData(aqua_dat)
-    long_f <- getData(fish_dat)
-    long_a$focus <- "aquaculture"
-    long_f$focus <- "fisheries"
+    long_a <- getData_Impacts(aqua_dat,
+                     LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Aquaculture"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = F, 
+                    splitIN = "\t",
+                    adjIN = 0)
+                    
+    long_f <- getData_Impacts(fish_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Fisheries"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = F, 
+                    splitIN = "\t",
+                    adjIN = 0)
     
     # round 2 data:
-    long_a2 <- getData(aqua2_dat,rmMeanScore=T, splitIN = "\t",adjIN = 0)
-    long_f2 <- getData(fish2_dat,rmMeanScore=F)
-    long_a2$focus <- "aquaculture"
-    long_f2$focus <- "fisheries"
+    long_a2 <- getData_Impacts(aqua2_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Aquaculture:Finfish",
+                              "Aquaculture:Shellfish",
+                              "Aquaculture:Seaweed"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = T, 
+                    splitIN = "\t",
+                    adjIN = 0)
+    
+    # check that values match:
+    # long_a2%>%filter(Email == "Mike.rust@noaa.gov",category == "Changes in Spawning timing")
+    
+    
+    long_f2 <- getData_Impacts(datIN = fish2_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = "Fisheries",
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = F, 
+                    splitIN = "\t",
+                    adjIN = 0)
+    
     
     # mitigation and adaptation
     long_adapt_fish   <- getData_adapt(adapt_fish,adjIN = 4)
@@ -99,7 +148,8 @@ To generate the plots above run the following code in R (be sure your workspace 
     long <- rbind(long_a,long_f)
     
     # summarize across participants:
-    smry <- long%>%group_by(focus,category,time_period,type)%>%summarise(
+    dat <- long_f2
+    smry <- dat%>%group_by(Sector,Category,LM,time_period)%>%summarise(
       mn = mean(value.x,na.rm=T),
       sd = sd (value.x,na.rm=T),
       n  = length(value.x),
@@ -107,39 +157,40 @@ To generate the plots above run the following code in R (be sure your workspace 
       mn_conf = mean(conf_n,na.rm=T),
       sd_conf = sd(conf_n,na.rm=T),
       median_conf = median(conf_n,na.rm=T))
+    
     smry<-smry%>%mutate(se = sd/sqrt(n))
-    smry$type <- factor(smry$type)
+    smry$LM <- factor(smry$LM)
     
     # split mag and likelihood into columns:
     smry_w    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, mn), 
-                               key = type, value = mn)
+                                 select(Sector,time_period,Category,LM, mn), 
+                               key = LM, value = mn)
     smry_wse    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, se), 
-                               key = type, value = se)
+                                 select(Sector,time_period,Category,LM, se), 
+                               key = LM, value = se)
     smry_wse    <- smry_wse%>%rename(likelihoodSE=likelihood,magnitudeSE=magnitude)
     smry_wsd    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, sd), 
-                               key = type, value = sd)
+                                 select(Sector,time_period,Category,LM, sd), 
+                               key = LM, value = sd)
     smry_wsd    <- smry_wsd%>%rename(likelihoodSD=likelihood,magnitudeSD=magnitude)
     smry_w <- merge(smry_w,smry_wse,
-                    by=c("focus","time_period","category"))
-      smry_w <- merge(smry_w,smry_wsd,
-                    by=c("focus","time_period","category"))
+                    by=c("Sector","time_period","Category"))
+    smry_w <- merge(smry_w,smry_wsd,
+                    by=c("Sector","time_period","Category"))
     smry_conf <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, mn_conf), 
-                               key = type, value = mn_conf)
+                                 select(Sector,time_period,Category,LM, mn_conf), 
+                               key = LM, value = mn_conf)
     smry_conf$mnConf <- apply(smry_conf[,c("likelihood","magnitude")],1,mean)
     
     smry_w <- merge(smry_w, smry_conf%>%
-                      select(focus,time_period,category, mnConf),
-                    by=c("focus","time_period","category"))
+                      select(Sector,time_period,Category, mnConf),
+                    by=c("Sector","time_period","Category"))
     smry_w$likelihoodCV <- 100*smry_w$likelihoodSD/smry_w$likelihood
     smry_w$magnitudeCV  <- 100*smry_w$magnitudeSD/smry_w$magnitude
-    smry_w$category <- gsub("Change in ", "", smry_w$category)
-    smry_w$category <- gsub("Changes in ", "", smry_w$category)
-    smry_w$category <- gsub("Changes to ", "", smry_w$category)
-    smry_w$cat_wrap <- stringr::str_wrap(smry_w$category, width=30)
+    smry_w$Category <- gsub("Change in ", "", smry_w$Category)
+    smry_w$Category <- gsub("Changes in ", "", smry_w$Category)
+    smry_w$Category <- gsub("Changes to ", "", smry_w$Category)
+    smry_w$cat_wrap <- stringr::str_wrap(smry_w$Category, width=30)
     
     mult<-1.95
     smry_w$ylower <- smry_w$likelihood-mult*smry_w$likelihoodSE
@@ -150,8 +201,9 @@ To generate the plots above run the following code in R (be sure your workspace 
     
     smry_w$confidence   <- smry_w$mnConf
     smry_w$uncertainty  <- smry_w$mnConf^-1
-    smry_w$focus        <- factor(smry_w$focus,levels=c("fisheries","aquaculture"))
-    aqua <- smry_w%>%filter(focus=="aquaculture")
+    smry_w$Sector       <- factor(smry_w$Sector)
+    aqua <- smry_w%>%filter(Sector=="aquaculture")
+    
     fish <- smry_w%>%filter(focus=="fisheries")
     
     
@@ -161,9 +213,9 @@ To generate the plots above run the following code in R (be sure your workspace 
    p <-  ggplot()+geom_point(data=smry_w,aes(x     = magnitude,
                                              y     = likelihood,
                                              color = confidence,
-                                             shape = focus))+
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_grid(focus~time_period)+theme_minimal()
+      facet_grid(Sector~time_period)+theme_minimal()
      
     sclr <-.75
     png("Figs/Fig1_all_byTimeFrame.png", 
