@@ -150,7 +150,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                                   "High - My own data and publications"),
                                        adjIN = 4)
     long_adapt_aqua   <- getData_adapt(adapt_aqua,
-                                       lkupIN = adapt_fish_lkup,
+                                       lkupIN = adapt_aqua_lkup,
                                        LM  = c("likelihood","magnitude"),
                                        lvls  = c("Low  - My opinion",
                                                   "Medium low - My opinion and some data",
@@ -159,11 +159,16 @@ To generate the plots above run the following code in R (be sure your workspace 
                                                   "High - My own data and publications"),
                                        adjIN = 4)
     
-    long_mitigat2     <- getData_mitig(mitigat2_dat,adjIN = 4)
-      
-    # combine into single long format:
+     # combine into single long format:
     long       <- rbind(long_a,long_f)
     long_adapt <- rbind(long_adapt_aqua,long_adapt_fish)
+    
+    ## Feb 2022 - pick up here
+    long_mitigat2     <- getData_mitig(mitigat2_dat,adjIN = 4)
+      
+    
+    
+   
     
     # summarize across participants:
     dat <- long_f2
