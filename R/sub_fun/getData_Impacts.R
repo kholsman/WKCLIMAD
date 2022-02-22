@@ -61,16 +61,7 @@ getData_Impacts <- function(datIN,
                                Sector   = Sector)
     long_dat2   <- cbind(long_dat,mat)
     long_dat2   <- long_dat2[which(!is.na(long_dat2$value)),]
-    # long_dat$time_period <-factor(
-    #   rep(c(rep("short-term",(length(types)-2)*length(catgry)*length(peeps)),
-    #         rep("medium-term",(length(types)-2)*length(catgry)*length(peeps)),
-    #         rep("long-term",(length(types)-2)*length(catgry)*length(peeps))),2),levels = c("short-term","medium-term","long-term"))
-    # long_dat$type <-
-    #   c(rep("likelihood",(length(types)-2)*length(catgry)*length(peeps)*3),
-    #     rep("magnitude",(length(types)-2)*length(catgry)*length(peeps)*3))
-    # 
-   
-    
+ 
     # convert confidence wide format to long:
     long_conf  <- melt(datIN[,c(lab_c,rmcc)], 
                        id.vars=c('ID','Submission Date', "Email",'First Name', 'Last Name'))
@@ -94,16 +85,7 @@ getData_Impacts <- function(datIN,
                                LM       = LM, 
                                Sector   = Sector)
     long_conf2   <- cbind(long_conf,mat)
-    #long_conf2   <- long_conf2[which(!is.na(long_conf2$value)),]
 
-    # long_conf$time_period <-factor(
-    #   rep(c(rep("short-term",length(catgry)*length(peeps)),
-    #         rep("medium-term",length(catgry)*length(peeps)),
-    #         rep("long-term",length(catgry)*length(peeps))),2),levels = c("short-term","medium-term","long-term"))
-    # long_conf$type <-
-    #   c(rep("likelihood",length(catgry)*length(peeps)*3),
-    #     rep("magnitude",length(catgry)*length(peeps)*3))
-    
     # merge values and confidence into one dataframe:
     long <- merge(long_dat2,long_conf2,by=c("ID","Submission Date","Email","First Name","Last Name",
                                             "category","email2",       

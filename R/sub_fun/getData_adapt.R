@@ -5,7 +5,20 @@
 #' data.frame for plotting and analysis
 #' 
 
-getData_adapt <- function(datIN,adjIN = 3){
+getData_adapt <- function(datIN,
+                          lkupIN = adapt_fish_lkup,
+                          LM  = c("likelihood","magnitude"),
+                          lvls  = c("Low  - My opinion",
+                                    "Medium low - My opinion and some data",
+                                    "Medium - Some data and publications by others",
+                                    "Medium High - My own data, and publications by others",
+                                    "High - My own data and publications"),
+                          rmMeanScore = F, 
+                          splitIN = "\t",
+                          adjIN = 4){
+  
+  
+  datIN$ID <- 1:dim(datIN)[1]
   peeps    <- datIN$Email
   np       <- length(peeps)
   #cca      <- grep(" >> ",as.character(colnames(datIN)))
@@ -13,7 +26,7 @@ getData_adapt <- function(datIN,adjIN = 3){
   conf     <- grep("Confidence",as.character(colnames(datIN)))
   tmp      <- strsplit(colnames(datIN)[cca]," >> ")
   types    <- c(1:10,"Confidence", "Other Thoughts")
-  lab_c    <- match(c('Submission Date', "Email",'First Name', 'Last Name'), colnames(datIN))
+  lab_c    <- match(c('ID','Submission Date', "Email",'First Name', 'Last Name'), colnames(datIN))
   rmtime   <- grep( "Time Frame", colnames(datIN))
   rmcc     <- grep( "Confidence", colnames(datIN))
   rmcc_n   <- grep( "Other Thoughts", colnames(datIN))
@@ -25,7 +38,7 @@ getData_adapt <- function(datIN,adjIN = 3){
   
   # convert wide format to long for values:
   long_dat   <- melt(datIN[,-c(rmtime,rmcc,rmcc_n,rmcc_a,rmcc_b,rmcc_byu,rmcc_last)], 
-                     id.vars=c('Submission Date', "Email",'First Name', 'Last Name'))
+                     id.vars=c('ID','Submission Date', "Email",'First Name', 'Last Name'))
   long_dat$value    <- as.numeric(long_dat$value)
   tmp               <- strsplit(as.character(long_dat$variable), split = ">>")
   long_dat$category <- sapply(tmp, "[[", 1)
@@ -34,28 +47,44 @@ getData_adapt <- function(datIN,adjIN = 3){
   catgry   <- unique(cats)
   nc       <- length(catgry)
   
-  long_dat$type <-
-    c(rep("likelihood",(length(types)-2)*length(catgry)*length(peeps)),
-      rep("magnitude",(length(types)-2)*length(catgry)*length(peeps)))
+  mat         <- expand.grid(email2   = peeps,
+                             type = 1:10,
+                             num = lkupIN$num)
   
-  long_dat2   <- long_dat[which(!is.na(long_dat$value)),]
-  
+  mat         <- merge(mat,lkupIN,by = "num")
+  long_dat2   <- cbind(long_dat,mat)
+  long_dat2   <- long_dat2[which(!is.na(long_dat2$value)),]
  
   # convert confidence wide format to long:
   long_conf  <- melt(datIN[,c(lab_c,rmcc)], 
-                     id.vars=c('Submission Date', "Email",'First Name', 'Last Name'))
+                     id.vars=c('ID','Submission Date', "Email",'First Name', 'Last Name'))
   tmp        <- strsplit(as.character(long_conf$variable), split = ">>")
   long_conf$category <- sapply(tmp, "[[", 1)
   long_conf$category <- substr(long_conf$category, start =1,stop = nchar(long_conf$category)-adjIN)
-  long_conf$type <-
-    c(rep("likelihood",length(catgry)*length(peeps)),
-      rep("magnitude",length(catgry)*length(peeps)))
+  mat         <- expand.grid(email2   = peeps,
+                             num = lkupIN$num)
+  mat         <- merge(mat,lkupIN,by = "num")
+  long_conf2   <- cbind(long_conf,mat)
+  
+  # convert timeperiod wide format to long:
+  long_time  <- melt(datIN[,c(lab_c,rmtime)], 
+                     id.vars=c('ID','Submission Date', "Email",'First Name', 'Last Name'))
+  tmp        <- strsplit(as.character(long_time$variable), split = ">>")
+  long_time$category <- sapply(tmp, "[[", 1)
+  long_time$category <- substr(long_time$category, start =1,stop = nchar(long_time$category)-adjIN)
+  mat         <- expand.grid(email2   = peeps,
+                             num = lkupIN$num)
+  mat         <- merge(mat,lkupIN,by = "num")
+  long_time2   <- cbind(long_time,mat)
+  
+  longa <- merge(long_time2,long_conf2,by=c( "ID","Submission Date", "Email" ,"First Name","Last Name",       
+                                           "category","num","email2","Group","Category",  
+                                           "Label","LM","Cat1","Cat2"   ))
   
   # merge values and confidence into one dataframe:
-  long <- merge(long_dat2,long_conf,by=c('Submission Date', "Email",
-                                         'First Name', 'Last Name',
-                                         "category","type"))
-  
+  long <- merge(long_dat2,longa,by=c( "ID","Submission Date", "Email" ,"First Name","Last Name",       
+                                           "category","num","email2","Group","Category",  
+                                           "Label","LM","Cat1","Cat2"   ))
   lvls <- c("Low  - My opinion",
             "Medium low - My opinion and some data",
             "Medium - Some data and publications by others",
@@ -64,29 +93,13 @@ getData_adapt <- function(datIN,adjIN = 3){
   long$value.y <- factor(long$value.y, levels = lvls)
   long$conf_n <- as.numeric(long$value.y)
   
-  # convert timeperiod wide format to long:
-  long_time  <- melt(datIN[,c(lab_c,rmtime)], 
-                     id.vars=c('Submission Date', "Email",'First Name', 'Last Name'))
-  tmp        <- strsplit(as.character(long_time$variable), split = ">>")
-  long_time$category <- sapply(tmp, "[[", 1)
-  long_time$category <- substr(long_time$category, start =1,stop = nchar(long_time$category)-adjIN)
-  long_time$type <-
-    c(rep("likelihood",length(catgry)*length(peeps)),
-      rep("magnitude",length(catgry)*length(peeps)))
-  
-  # merge values and confidence into one dataframe:
-  long <- merge(long,long_time,by=c('Submission Date', "Email",
-                                         'First Name', 'Last Name',
-                                         "category","type"))
-  
   
   lvls <- c("Now",
             "In the next 20 years",
             "After 2041 but before 2060",
             "After 2061")            
-  long$value <- factor(long$value, levels = lvls)
-  long$timeframe_n <- as.numeric(long$value.y)
-  
+  long$value.x <- factor(long$value.x, levels = lvls)
+  long$timeframe_n <- as.numeric(long$value.x)
   
   return(long)
 }

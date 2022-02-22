@@ -140,12 +140,30 @@ To generate the plots above run the following code in R (be sure your workspace 
     
     
     # mitigation and adaptation
-    long_adapt_fish   <- getData_adapt(adapt_fish,adjIN = 4)
-    long_adapt_aqua   <- getData_adapt(adapt_aqua,adjIN = 4)
+    long_adapt_fish   <- getData_adapt(adapt_fish,
+                                       lkupIN = adapt_fish_lkup,
+                                       LM  = c("likelihood","magnitude"),
+                                       lvls  = c("Low  - My opinion",
+                                                  "Medium low - My opinion and some data",
+                                                  "Medium - Some data and publications by others",
+                                                  "Medium High - My own data, and publications by others",
+                                                  "High - My own data and publications"),
+                                       adjIN = 4)
+    long_adapt_aqua   <- getData_adapt(adapt_aqua,
+                                       lkupIN = adapt_fish_lkup,
+                                       LM  = c("likelihood","magnitude"),
+                                       lvls  = c("Low  - My opinion",
+                                                  "Medium low - My opinion and some data",
+                                                  "Medium - Some data and publications by others",
+                                                  "Medium High - My own data, and publications by others",
+                                                  "High - My own data and publications"),
+                                       adjIN = 4)
+    
     long_mitigat2     <- getData_mitig(mitigat2_dat,adjIN = 4)
       
     # combine into single long format:
-    long <- rbind(long_a,long_f)
+    long       <- rbind(long_a,long_f)
+    long_adapt <- rbind(long_adapt_aqua,long_adapt_fish)
     
     # summarize across participants:
     dat <- long_f2
