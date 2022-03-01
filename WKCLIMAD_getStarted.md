@@ -68,288 +68,296 @@ workspace is within your local `WKCLIMAD` folder):
     
     # reshape the data into long-format:
     # --------------------------------------
-    long_a <- getData(aqua_dat)
-    long_f <- getData(fish_dat)
-    long_a$focus <- "aquaculture"
-    long_f$focus <- "fisheries"
+    long_a <- getData_Impacts(aqua_dat,
+                     LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Aquaculture"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = F, 
+                    splitIN = "\t",
+                    adjIN = 0)
+                    
+    long_f <- getData_Impacts(fish_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Fisheries"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = F, 
+                    splitIN = "\t",
+                    adjIN = 0)
     
-    # combine into single long format:
-    long <- rbind(long_a,long_f)
+    # round 2 data:
+    long_a2 <- getData_Impacts(aqua2_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Aquaculture:Finfish",
+                              "Aquaculture:Shellfish",
+                              "Aquaculture:Seaweed"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = T, 
+                    splitIN = "\t",
+                    adjIN = 0)
     
-    # summarize across participants:
-    smry <- long%>%group_by(focus,category,time_period,type)%>%summarise(
-      mn = mean(value.x,na.rm=T),
-      sd = sd (value.x,na.rm=T),
-      n  = length(value.x),
-      median = median(value.x,na.rm=T),
-      mn_conf = mean(conf_n,na.rm=T),
-      sd_conf = sd(conf_n,na.rm=T),
-      median_conf = median(conf_n,na.rm=T))
-    smry<-smry%>%mutate(se = sd/sqrt(n))
-    smry$type <- factor(smry$type)
-    
-    # split mag and likelihood into columns:
-    smry_w    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, mn), 
-                               key = type, value = mn)
-    smry_wse    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, se), 
-                               key = type, value = se)
-    smry_wse    <- smry_wse%>%rename(likelihoodSE=likelihood,magnitudeSE=magnitude)
-    smry_wsd    <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, sd), 
-                               key = type, value = sd)
-    smry_wsd    <- smry_wsd%>%rename(likelihoodSD=likelihood,magnitudeSD=magnitude)
-    smry_w <- merge(smry_w,smry_wse,
-                    by=c("focus","time_period","category"))
-      smry_w <- merge(smry_w,smry_wsd,
-                    by=c("focus","time_period","category"))
-    smry_conf <- tidyr::spread(smry%>%
-                                 select(focus,time_period,category,type, mn_conf), 
-                               key = type, value = mn_conf)
-    smry_conf$mnConf <- apply(smry_conf[,c("likelihood","magnitude")],1,mean)
-    
-    smry_w <- merge(smry_w, smry_conf%>%
-                      select(focus,time_period,category, mnConf),
-                    by=c("focus","time_period","category"))
-    smry_w$likelihoodCV <- 100*smry_w$likelihoodSD/smry_w$likelihood
-    smry_w$magnitudeCV  <- 100*smry_w$magnitudeSD/smry_w$magnitude
-    smry_w$category <- gsub("Change in ", "", smry_w$category)
-    smry_w$category <- gsub("Changes in ", "", smry_w$category)
-    smry_w$category <- gsub("Changes to ", "", smry_w$category)
-    smry_w$cat_wrap <- stringr::str_wrap(smry_w$category, width=30)
-    
-    mult<-1.95
-    smry_w$ylower <- smry_w$likelihood-mult*smry_w$likelihoodSE
-    smry_w$yupper <- smry_w$likelihood+mult*smry_w$likelihoodSE
-    smry_w$xlower <- smry_w$magnitude-mult*smry_w$magnitudeSE
-    smry_w$xupper <- smry_w$magnitude+mult*smry_w$magnitudeSE
-  
-    
-    smry_w$confidence   <- smry_w$mnConf
-    smry_w$uncertainty  <- smry_w$mnConf^-1
-    smry_w$focus        <- factor(smry_w$focus,levels=c("fisheries","aquaculture"))
-    aqua <- smry_w%>%filter(focus=="aquaculture")
-    fish <- smry_w%>%filter(focus=="fisheries")
+    # check that values match:
+    # long_a2%>%filter(Email == "Mike.rust@noaa.gov",category == "Changes in Spawning timing")
     
     
+    long_f2 <- getData_Impacts(datIN = fish2_dat,
+                    LM  = c("likelihood","magnitude"),
+                    time_period  = c("2021 - 2040", "2041 - 2060", "2060 - 2100"),
+                    Sector  = c("Fisheries"),
+                    lvls  = c("Low  - My opinion",
+                              "Medium low - My opinion and some data",
+                              "Medium - Some data and publications by others",
+                              "Medium High - My own data, and publications by others",
+                              "High - My own data and publications"),
+                    rmMeanScore = T, 
+                    splitIN = "Mean Score",
+                    adjIN = 1)
+    
+    
+    # mitigation and adaptation
+    long_adapt_fish   <- getData_adapt(adapt_fish,
+                                       lkupIN = adapt_fish_lkup,
+                                       LM  = c("likelihood","magnitude"),
+                                       lvls  = c("Low  - My opinion",
+                                                  "Medium low - My opinion and some data",
+                                                  "Medium - Some data and publications by others",
+                                                  "Medium High - My own data, and publications by others",
+                                                  "High - My own data and publications"),
+                                       adjIN = 4)
+    long_adapt_aqua   <- getData_adapt(adapt_aqua,
+                                       lkupIN = adapt_aqua_lkup,
+                                       LM  = c("likelihood","magnitude"),
+                                       lvls  = c("Low  - My opinion",
+                                                  "Medium low - My opinion and some data",
+                                                  "Medium - Some data and publications by others",
+                                                  "Medium High - My own data, and publications by others",
+                                                  "High - My own data and publications"),
+                                       adjIN = 4)
+    
+     # combine into single long format:
+    long       <- rbind(long_a,long_f)
+    long_adapt <- rbind(long_adapt_aqua,long_adapt_fish)
+    
+    ## Feb 2022 - pick up here
+    long_mitigat2     <- getData_adapt(datIN  = mitigat_dat,
+                                       lkupIN = mitigat_lkup,
+                                       LM  = c("likelihood","magnitude"),
+                                       lvls  = c("Low  - My opinion",
+                                                  "Medium low - My opinion and some data",
+                                                  "Medium - Some data and publications by others",
+                                                  "Medium High - My own data, and publications by others",
+                                                  "High - My own data and publications"),
+                                       adjIN = 4)
+    
+    # get summaries:
+    smry_f1i <- get_smry_impacts(dat = long_f,
+                                 focus   = "Fisheries",
+                                 Sector2 = "Fisheries (1st delphi)", mult = 1.95)
+    smry_a1i <- get_smry_impacts(dat = long_a,
+                                 focus   = "Aquaculture",
+                                 Sector2 = "Aquaculture (1st delphi)", mult = 1.95)
+    smry_f2i <- get_smry_impacts(dat = long_f2,
+                                 focus   = "Fisheries",
+                                 Sector2 = "Fisheries (2nd delphi)", mult = 1.95)
+    smry_a2i <- get_smry_impacts(dat = long_a2,
+                                 focus   = "Aquaculture",
+                                 Sector2 = "Aquaculture (2nd delphi)", mult = 1.95)
+    #smry of impacts
+    smry_i <- rbind(smry_f1i,smry_a1i,smry_f2i,smry_a2i)
+   
+    
+      # get summaries:
+    smry_fish_adapt <- get_smry_adapt_mit(dat = long_adapt_fish,
+                                 focus   = "Fisheries",
+                                 Sector2 = "Fisheries Adaptation", mult = 1.95)
+    
+     smry_aqua_adapt <- get_smry_adapt_mit(dat = long_adapt_aqua,
+                                 focus   = "Aquaculture",
+                                 Sector2 = "Aquaculture Adaptation", mult = 1.95)
+     
+     smry_mitigat <- get_smry_adapt_mit(dat = long_mitigat2,
+                                 focus   = "Mitigation",
+                                 Sector2 = "Fish. & Aqua. Mitigation", mult = 1.95)
+    smry_am <- rbind(smry_fish_adapt,smry_aqua_adapt,smry_mitigat)
+    
+    smry_am$Sector2 <- factor(smry_am$Sector2,
+                             levels = c("Fisheries Adaptation",
+                                        "Aquaculture Adaptation",
+                                        "Fish. & Aqua. Mitigation"))
+    
+    write.table(smry_am,file="Data/out/Adapt_mitigat_summary.csv",sep = ",",row.names = FALSE, qmethod = "double")
+    write.table(smry_i,file="Data/out/Impacts_summary.csv",sep = ",",row.names = FALSE, qmethod = "double")
+    write.table(file="Data/out/aquaculture_cats.csv",
+              unique(smry_i%>%filter(focus=="Aquaculture")%>%select(Category)),
+              sep = ",",row.names = FALSE,  qmethod = "double")
+   write.table(file="Data/out/fishery_cats.csv",
+              unique(smry_i%>%filter(focus=="Fisheries")%>%select(Category)),
+              sep = ",",row.names = FALSE,  qmethod = "double")
+
+   # write.csv(file="Data/out/fishery.csv",fish)
+   # write.csv(file="Data/out/aquaculture.csv",aqua)
+```
+
+# Now to make some plots:
+
+``` r
   # now make some plots:
-    
+  
     #all points together
-   p <-  ggplot()+geom_point(data=smry_w,aes(x     = magnitude,
+   p <-  ggplot()+geom_point(data=smry_i,aes(x     = magnitude,
                                              y     = likelihood,
                                              color = confidence,
-                                             shape = focus))+
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_grid(focus~time_period)+theme_minimal()
+      facet_grid(time_period~Sector2)+theme_minimal()
      
-    sclr <-.75
-    png("Figs/Fig1_all_byTimeFrame.png", 
+    sclr <-1.05
+    png("Figs/Fig1_impacts.png", 
         width = 8*sclr, height = 4.5*sclr, units = "in",res = 350)
     print(p)
     dev.off()
+    
    
-    # all points together for fisheries
-    p_fish<-  ggplot()+geom_point(data=smry_w%>%filter(focus=="fisheries"),
-                                   aes(x     = magnitude,
+      #all points together%>%filter(Sector2%in%c("Fisheries Adaptation","Aquaculture Adaptation")),
+   p_am <-  ggplot()+geom_point(data=smry_am,
+                                aes(x     = magnitude,
+                                    y     = likelihood,
+                                    color = confidence,
+                                    shape = Group))+
+     scale_color_viridis_c(begin=.9,end = 0)+
+     scale_shape_manual(values = shp_str[c(1,4,7:12)])+
+     facet_grid(Sector2~.)+theme_minimal()
+     
+    sclr <-1.1
+    png("Figs/Fig1_adaptmitg.png", 
+        width = 5*sclr, height = 5*sclr, units = "in",res = 350)
+    print(p_am)
+    dev.off()
+    
+    
+     #First only points together
+   p1 <-  ggplot()+geom_point(data=smry_i%>%
+                               filter(Sector2%in%
+                                        c("Fisheries (1st delphi)" , 
+                                          "Aquaculture (1st delphi)")),
+                             aes(x     = magnitude,
                                              y     = likelihood,
-                                             color = confidence),shape=16)+
+                                             color = confidence,
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_grid(focus~time_period)+theme_minimal()
-    
-    p_aqua <-  ggplot()+geom_point(data=smry_w%>%filter(focus=="aquaculture"),
-                                   aes(x     = magnitude,
+      facet_grid(time_period~Sector2)+theme_minimal()
+   p2 <-  ggplot()+geom_point(data=smry_i%>%
+                               filter(Sector2%in%
+                                        c("Fisheries (2nd delphi)",
+                                          "Aquaculture (2nd delphi)")),
+                             aes(x     = magnitude,
                                              y     = likelihood,
-                                             color = confidence),shape=17)+
+                                             color = confidence,
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_grid(focus~time_period)+theme_minimal()
-    
-    
-    # Now the top set for each focus:
-    #-------------------------------------------------
-    sub <- smry_w%>%filter(focus=="aquaculture",time_period=="long-term")
-    cc <- which(sub$likelihood>quantile(sub$likelihood)[4]&
-                  sub$magnitude>quantile(sub$magnitude)[4])
-    highest_aqua <- aqua[which(aqua$category%in%sub[cc,]$category),]
-    
-    sub  <- smry_w%>%filter(focus=="fisheries",time_period=="long-term")
-    cc   <- which(sub$likelihood>quantile(sub$likelihood)[4]&
-                    sub$magnitude>quantile(sub$magnitude)[4])
-    highest_fish <- fish[which(fish$category%in%sub[cc,]$category),]
-
-    p_top_fish <- ggplot()+geom_point(data=highest_fish,
-                            aes(x=magnitude,
-                                y=likelihood,
-                                color=confidence,
-                                shape=time_period))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap,nrow=2)+
-      theme_minimal()+ 
-      theme(strip.text = element_text(size = 5))+
-      xlim(0, 10) +ylim(0,10)+ 
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-    
-    sclr <-1
-    png("Figs/top_fish.png", 
-        width = 6*sclr, height = 3*sclr, units = "in",res = 350)
-    print(p_top_fish)
+      facet_grid(time_period~Sector2)+theme_minimal()
+     
+    sclr <-1.05
+    png("Figs/Fig1_impacts_1stdephi.png", 
+        width = 5.5*sclr, height = 4.5*sclr, units = "in",res = 350)
+    print(p1)
+    dev.off()
+     png("Figs/Fig1_impacts_2nddephi.png", 
+        width = 6*sclr, height = 4.5*sclr, units = "in",res = 350)
+    print(p2)
     dev.off()
     
-    p_top_aqua <- ggplot()+geom_point(data=highest_aqua,
-                            aes(x=magnitude,
-                                y=likelihood,
-                                color=confidence,
-                                shape=time_period))+
+    p_fish <- ggplot()+geom_point(data=smry_i%>%
+                               filter(focus=="Fisheries"),
+                             aes(x     = magnitude,
+                                             y     = likelihood,
+                                             color = confidence,
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap,nrow=2)+
-      theme_minimal()+ 
-      theme(strip.text = element_text(size = 5))+
-      xlim(0, 10) +ylim(0,10)+ 
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-    png("Figs/top_aqua.png", width = 4.5*sclr, height = 3*sclr, units = "in",res = 350)
-    print(p_top_aqua)
-    dev.off()
-      
-  
-    # now plot the top five most variable (based on SE)
-    #-------------------------------------------------
-    sub <- aqua #%>%filter(time_period=="long-term")
-    cc  <- which(sub$likelihoodCV>quantile(sub$likelihoodCV)[4]&
-                   sub$magnitudeCV>quantile(sub$magnitudeCV)[4])
-    highest_aquaSE <- aqua[which(aqua$category%in%sub[cc,]$category),]
+      facet_grid(time_period~Sector2)+theme_minimal()
     
-    sub  <- fish#%>%filter(time_period=="long-term")
-    cc  <- which(sub$likelihoodCV>quantile(sub$likelihoodCV)[4]&
-                   sub$magnitudeCV>quantile(sub$magnitudeCV)[4])
-    highest_fishSE <- fish[which(fish$category%in%sub[cc,]$category),]
-    
-    # plot the top set of fisheries 
-    p_top_fishSE <- ggplot(data=highest_fishSE)+
-      geom_point(aes(x=magnitude,y=likelihood,
-                     color=confidence,shape=time_period))+
-      geom_linerange(aes(x=magnitude,y=likelihood,
-                         color=confidence,ymin = ylower, ymax = yupper))+
-      geom_errorbarh(aes(x=magnitude,y=likelihood,
-                         color=confidence,xmin = xlower,xmax = xupper))+
+    p_aqua<- ggplot()+geom_point(data=smry_i%>%
+                               filter(focus=="Aquaculture"),
+                             aes(x     = magnitude,
+                                             y     = likelihood,
+                                             color = confidence,
+                                             shape = Sector))+
       scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap,nrow=2)+
-      theme_minimal()+ 
-      theme(strip.text = element_text(size = 5))+
-      xlim(0, 10) +ylim(0,10)+ 
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-    
-    sclr <-1
-    png("Figs/top_fish_var.png",
-        width = 6*sclr, height = 3*sclr, units = "in",res = 350)
-    print(p_top_fishSE)
-    dev.off()
-    
-     # plot the top set of aquaculture 
-    p_top_aquaSE <- ggplot(data=highest_aquaSE)+
-      geom_point(aes(x=magnitude,y=likelihood,
-                     color=confidence,shape=time_period))+
-      geom_linerange(aes(x=magnitude,y=likelihood,
-                         color=confidence,ymin = ylower, ymax = yupper))+
-      geom_errorbarh(aes(x=magnitude,y=likelihood,
-                         color=confidence,xmin = xlower,xmax = xupper))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap,nrow=2)+
-      theme_minimal()+ 
-      theme(strip.text = element_text(size = 5))+
-      xlim(0, 10) +ylim(0,10)+ 
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-    png("Figs/top_aqua_var.png", width = 7*sclr, height = 3*sclr, units = "in",res = 350)
-    print(p_top_aquaSE)
-    dev.off()
-      
-      
-      
-    # p_aqua_txt <- p_aqua + geom_text(data=sub,aes(x = magnitude,
-    #                                          y     = likelihood,
-    #                                          label = cat_wrap,
-    #                                          color = confidence))
-    # geom_text(data=smry_w,aes(x=magnitude,y=likelihood,color=mnConf,shape=focus)
-    sclr <-.75
-    png("Figs/Fig1a_aqua_byTimeFrame.png", 
-        width = 8*sclr, height = 3*sclr, units = "in",res = 350)
-    print(p_aqua)
-    dev.off()
-    png("Figs/Fig1b_fish_byTimeFrame.png", 
-        width = 8*sclr, height = 3*sclr, units = "in",res = 350)
+      facet_grid(time_period~Sector2)+theme_minimal()
+   
+     
+    sclr <-1.05
+    png("Figs/Fig1_impacts_fish.png", 
+        width = 5.5*sclr, height = 4.5*sclr, units = "in",res = 350)
     print(p_fish)
     dev.off()
-    
-    p2_aqua <- ggplot()+
-      geom_point(data=smry_w%>%filter(focus=="aquaculture"),
-                            aes(x     = magnitude,
-                                y     = likelihood,
-                                color = confidence,
-                                shape = time_period))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap)+theme_minimal()+ 
-      theme(strip.text = element_text(size = 5))
-       
-    png("Figs/plot_all_aqua.png", 
-        width = 8, height =8, units = "in",res = 350)
-    print(p2_aqua)
+     png("Figs/Fig1_impacts_aqua.png", 
+        width = 6*sclr, height = 4.5*sclr, units = "in",res = 350)
+    print(p_aqua)
     dev.off()
-    
-    p2_fish <- ggplot()+geom_point(data=smry_w%>%filter(focus=="fisheries"),
-                            aes(x     = magnitude,
-                                y     = likelihood,
-                                color = confidence,
-                                shape = time_period))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap)+theme_minimal()+
-      theme(strip.text = element_text(size = 5))
-    png("Figs/plot_all_fish.png", 
-        width = 8, height =8, units = "in",res = 350)
-    print(p2_fish)
-    dev.off()
+  
+p_eachC_fish <- ggplot()+
+  geom_point(data=smry_i%>%filter(focus=="Fisheries", Sector2 == "Fisheries (1st delphi)"),
+                                  aes(x=magnitude,
+                                      y=likelihood,
+                                      color=confidence,
+                                      shape=time_period),alpha = .3)+
+  geom_point(data=smry_i%>%filter(focus=="Fisheries", Sector2 == "Fisheries (2nd delphi)"),
+                                  aes(x=magnitude,
+                                      y=likelihood,
+                                      color=confidence,
+                                      shape=time_period),alpha = 1)+
+  scale_color_viridis_c()+
+  facet_wrap(.~cat_wrap,nrow=4)+
+  theme_minimal()+ 
+  theme(strip.text = element_text(size = 5))+
+  xlim(0, 10) +ylim(0,10)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-   
-     #same plot with confidence as size of "+"
-     p2_fish_SD<- ggplot(data=smry_w%>%
-                           filter(focus=="fisheries"))+
-       geom_point(aes(x=magnitude,y=likelihood,
-                      color=confidence,shape=time_period))+
-        geom_linerange(aes(x=magnitude,y=likelihood,
-                           color=confidence,ymin = ylower, ymax = yupper))+
-       geom_errorbarh(aes(x=magnitude,y=likelihood,
-                          color=confidence,xmin = xlower,xmax = xupper))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap)+theme_minimal()+ 
-       theme(strip.text = element_text(size = 5))
-    png("Figs/plot_all_fish_SE.png", 
-        width = 8, height =8, units = "in",res = 350)
-    print(p2_fish_SD)
-    dev.off()
-    
-    #same plot with confidence as size of "+"
-     p2_aqua_SD<- ggplot(data=smry_w%>%
-                           filter(focus=="aquaculture"))+
-       geom_point(aes(x=magnitude,y=likelihood,
-                      color=confidence,shape=time_period))+
-        geom_linerange(aes(x=magnitude,y=likelihood,
-                           color=confidence,ymin = ylower, ymax = yupper))+
-       geom_errorbarh(aes(x=magnitude,y=likelihood,
-                          color=confidence,xmin = xlower,xmax = xupper))+
-      scale_color_viridis_c()+
-      facet_wrap(.~cat_wrap)+theme_minimal()+ 
-       theme(strip.text = element_text(size = 5))
-    png("Figs/plot_all_aqua_SE.png", 
-        width = 8, height =8, units = "in",res = 350)
-    print(p2_aqua_SD)
-    dev.off()
-    
-    write.csv(file="Data/out/aquaculture_cats.csv",
-              unique(smry_w%>%filter(focus=="aquaculture")%>%select(category)))
-    write.csv(file="Data/out/fishery_cats.csv",
-              unique(smry_w%>%filter(focus=="fisheries")%>%select(category)))
-   
-   write.csv(file="Data/out/fishery.csv",fish)
-   write.csv(file="Data/out/aquaculture.csv",aqua)
+    sclr <-1.5
+png("Figs/each_impacts_fish.png", 
+    width = 6*sclr, height = 3*sclr, units = "in",res = 350)
+print(p_eachC_fish)
+dev.off()
    # add type (and range)
+
+
+ 
+p_eachC_aqua <- ggplot()+
+  # geom_point(data=smry_i%>%filter(focus=="Aquaculture", Sector2 == "Aquaculture (1st delphi)"),
+  #                                 aes(x=magnitude,
+  #                                     y=likelihood,
+  #                                     color=confidence,
+  #                                     shape=time_period),alpha = .3)+
+  geom_point(data=smry_i%>%filter(focus=="Aquaculture", Sector2 == "Aquaculture (2nd delphi)"),
+                                  aes(x=magnitude,
+                                      y=likelihood,
+                                      color=confidence,
+                                      shape=time_period),alpha = 1)+
+  scale_color_viridis_c()+
+  facet_grid(Sector~cat_wrap)+
+  theme_minimal()+ 
+  theme(strip.text = element_text(size = 5))+
+  xlim(0, 10) +ylim(0,10)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+    sclr <-1.5
+png("Figs/each_impacts_aqua.png", 
+    width = 6*sclr, height = 3*sclr, units = "in",res = 350)
+print(p_eachC_aqua)
+dev.off()
 ```

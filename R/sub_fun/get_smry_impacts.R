@@ -2,7 +2,7 @@
 
 # summarize across participants:
 
-get_smry_impacts <- function(dat = long_f2,Sector2 = "Fisheries", mult = 1.95){
+get_smry_impacts <- function(dat = long_f2,focus="",Sector2 = "Fisheries", mult = 1.95){
   
   smry <- dat%>%group_by(Sector,Category,LM,time_period)%>%summarise(
     mn = mean(value.x,na.rm=T),
@@ -42,6 +42,7 @@ get_smry_impacts <- function(dat = long_f2,Sector2 = "Fisheries", mult = 1.95){
                   by=c("Sector","time_period","Category"))
   smry_w$likelihoodCV <- 100*smry_w$likelihoodSD/smry_w$likelihood
   smry_w$magnitudeCV  <- 100*smry_w$magnitudeSD/smry_w$magnitude
+  smry_w$Category_long <- smry_w$Category
   smry_w$Category <- gsub("Change in ", "", smry_w$Category)
   smry_w$Category <- gsub("Changes in ", "", smry_w$Category)
   smry_w$Category <- gsub("Changes to ", "", smry_w$Category)
@@ -57,6 +58,7 @@ get_smry_impacts <- function(dat = long_f2,Sector2 = "Fisheries", mult = 1.95){
   smry_w$uncertainty  <- smry_w$mnConf^-1
   smry_w$Sector       <- factor(smry_w$Sector)
   smry_w$Sector2      <- Sector2
+  smry_w$focus        <- focus
   
   return(smry_w = smry_w)
 }

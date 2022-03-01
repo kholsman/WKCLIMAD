@@ -24,7 +24,7 @@ getData_adapt <- function(datIN,
   #cca      <- grep(" >> ",as.character(colnames(datIN)))
   timeframe<- grep("Time Frame",as.character(colnames(datIN)))
   conf     <- grep("Confidence",as.character(colnames(datIN)))
-  tmp      <- strsplit(colnames(datIN)[cca]," >> ")
+  #tmp      <- strsplit(colnames(datIN)[cca]," >> ")
   types    <- c(1:10,"Confidence", "Other Thoughts")
   lab_c    <- match(c('ID','Submission Date', "Email",'First Name', 'Last Name'), colnames(datIN))
   rmtime   <- grep( "Time Frame", colnames(datIN))

@@ -29,6 +29,7 @@
   
   # plotting stuff:
   #-------------------------------------------
+  shp_str <- c(15,1,8,6,2,3,4, 17,7, 19,  5,  0)#sample(c(0:8, 15,19,17),12)
   grid_lwdIN     <- .4
   breaks         <- seq(0,250,50)
   pal            <- c(rev(RColorBrewer::brewer.pal(length(breaks)-1,"GnBu")),"white")
