@@ -237,7 +237,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
      
     sclr <-1.05
@@ -273,7 +273,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
    p2 <-  ggplot()+geom_point(data=smry_i%>%
                                filter(Sector2%in%
@@ -283,7 +283,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
      
     sclr <-1.05
@@ -302,7 +302,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
     
     p_aqua<- ggplot()+geom_point(data=smry_i%>%
@@ -311,7 +311,7 @@ To generate the plots above run the following code in R (be sure your workspace 
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
    
      
@@ -336,7 +336,7 @@ p_eachC_fish <- ggplot()+
                                       y=likelihood,
                                       color=confidence,
                                       shape=time_period),alpha = 1)+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(begin=.9,end = 0)+
   facet_wrap(.~cat_wrap,nrow=4)+
   theme_minimal()+ 
   theme(strip.text = element_text(size = 5))+
@@ -364,7 +364,7 @@ p_eachC_aqua <- ggplot()+
                                       y=likelihood,
                                       color=confidence,
                                       shape=time_period),alpha = 1)+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(begin=.9,end = 0)+
   facet_grid(Sector~cat_wrap)+
   theme_minimal()+ 
   theme(strip.text = element_text(size = 5))+
