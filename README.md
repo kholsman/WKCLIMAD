@@ -209,6 +209,8 @@ workspace is within your local `WKCLIMAD` folder):
 
 # Now to make some plots:
 
+![Results of both rounds of Delphi surveys.](Figs/Fig1_impacts.png)
+
 ``` r
   # now make some plots:
   

@@ -228,6 +228,9 @@ To generate the plots above run the following code in R (be sure your workspace 
 
 # Now to make some plots:
 
+![Results of both rounds of Delphi surveys.](Figs/Fig1_impacts.png)
+
+
 ```{r plotResults, echo=T, eval=T, include =T,results='hide',message=FALSE}
     
   # now make some plots:
@@ -378,7 +381,6 @@ png("Figs/each_impacts_aqua.png",
 print(p_eachC_aqua)
 dev.off()
 
- 
 ```
 
 
