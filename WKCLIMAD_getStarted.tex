@@ -98,6 +98,20 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -164,20 +178,8 @@ WKCLIMAD report. The code below will generate the following plots:
 
 \begin{figure}
 \centering
-\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Fig1_all_byTimeFrame.png}
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Fig1_impacts_1stdephi.png}
 \caption{Results of the first round of Delphi surveys.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/plot_all_aqua.png}
-\caption{Results by category for Aquaculture}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/plot_all_fish.png}
-\caption{Results by category for Fisheries}
 \end{figure}
 
 To generate the plots above run the following code in R (be sure your
@@ -193,290 +195,310 @@ workspace is within your local \texttt{WKCLIMAD} folder):
     
     \CommentTok{\# reshape the data into long{-}format:}
     \CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-\NormalTok{    long\_a }\OtherTok{\textless{}{-}} \FunctionTok{getData}\NormalTok{(aqua\_dat)}
-\NormalTok{    long\_f }\OtherTok{\textless{}{-}} \FunctionTok{getData}\NormalTok{(fish\_dat)}
-\NormalTok{    long\_a}\SpecialCharTok{$}\NormalTok{focus }\OtherTok{\textless{}{-}} \StringTok{"aquaculture"}
-\NormalTok{    long\_f}\SpecialCharTok{$}\NormalTok{focus }\OtherTok{\textless{}{-}} \StringTok{"fisheries"}
+\NormalTok{    long\_a }\OtherTok{\textless{}{-}} \FunctionTok{getData\_Impacts}\NormalTok{(aqua\_dat,}
+                     \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                    \AttributeTok{time\_period  =} \FunctionTok{c}\NormalTok{(}\StringTok{"2021 {-} 2040"}\NormalTok{, }\StringTok{"2041 {-} 2060"}\NormalTok{, }\StringTok{"2060 {-} 2100"}\NormalTok{),}
+                    \AttributeTok{Sector  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Aquaculture"}\NormalTok{),}
+                    \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                              \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                              \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                              \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                              \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                    \AttributeTok{rmMeanScore =}\NormalTok{ F, }
+                    \AttributeTok{splitIN =} \StringTok{"}\SpecialCharTok{\textbackslash{}t}\StringTok{"}\NormalTok{,}
+                    \AttributeTok{adjIN =} \DecValTok{0}\NormalTok{)}
+                    
+\NormalTok{    long\_f }\OtherTok{\textless{}{-}} \FunctionTok{getData\_Impacts}\NormalTok{(fish\_dat,}
+                    \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                    \AttributeTok{time\_period  =} \FunctionTok{c}\NormalTok{(}\StringTok{"2021 {-} 2040"}\NormalTok{, }\StringTok{"2041 {-} 2060"}\NormalTok{, }\StringTok{"2060 {-} 2100"}\NormalTok{),}
+                    \AttributeTok{Sector  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fisheries"}\NormalTok{),}
+                    \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                              \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                              \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                              \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                              \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                    \AttributeTok{rmMeanScore =}\NormalTok{ F, }
+                    \AttributeTok{splitIN =} \StringTok{"}\SpecialCharTok{\textbackslash{}t}\StringTok{"}\NormalTok{,}
+                    \AttributeTok{adjIN =} \DecValTok{0}\NormalTok{)}
     
-    \CommentTok{\# combine into single long format:}
-\NormalTok{    long }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(long\_a,long\_f)}
+    \CommentTok{\# round 2 data:}
+\NormalTok{    long\_a2 }\OtherTok{\textless{}{-}} \FunctionTok{getData\_Impacts}\NormalTok{(aqua2\_dat,}
+                    \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                    \AttributeTok{time\_period  =} \FunctionTok{c}\NormalTok{(}\StringTok{"2021 {-} 2040"}\NormalTok{, }\StringTok{"2041 {-} 2060"}\NormalTok{, }\StringTok{"2060 {-} 2100"}\NormalTok{),}
+                    \AttributeTok{Sector  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Aquaculture:Finfish"}\NormalTok{,}
+                              \StringTok{"Aquaculture:Shellfish"}\NormalTok{,}
+                              \StringTok{"Aquaculture:Seaweed"}\NormalTok{),}
+                    \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                              \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                              \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                              \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                              \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                    \AttributeTok{rmMeanScore =}\NormalTok{ T, }
+                    \AttributeTok{splitIN =} \StringTok{"}\SpecialCharTok{\textbackslash{}t}\StringTok{"}\NormalTok{,}
+                    \AttributeTok{adjIN =} \DecValTok{0}\NormalTok{)}
     
-    \CommentTok{\# summarize across participants:}
-\NormalTok{    smry }\OtherTok{\textless{}{-}}\NormalTok{ long}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{group\_by}\NormalTok{(focus,category,time\_period,type)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{summarise}\NormalTok{(}
-      \AttributeTok{mn =} \FunctionTok{mean}\NormalTok{(value.x,}\AttributeTok{na.rm=}\NormalTok{T),}
-      \AttributeTok{sd =} \FunctionTok{sd}\NormalTok{ (value.x,}\AttributeTok{na.rm=}\NormalTok{T),}
-      \AttributeTok{n  =} \FunctionTok{length}\NormalTok{(value.x),}
-      \AttributeTok{median =} \FunctionTok{median}\NormalTok{(value.x,}\AttributeTok{na.rm=}\NormalTok{T),}
-      \AttributeTok{mn\_conf =} \FunctionTok{mean}\NormalTok{(conf\_n,}\AttributeTok{na.rm=}\NormalTok{T),}
-      \AttributeTok{sd\_conf =} \FunctionTok{sd}\NormalTok{(conf\_n,}\AttributeTok{na.rm=}\NormalTok{T),}
-      \AttributeTok{median\_conf =} \FunctionTok{median}\NormalTok{(conf\_n,}\AttributeTok{na.rm=}\NormalTok{T))}
-\NormalTok{    smry}\OtherTok{\textless{}{-}}\NormalTok{smry}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{se =}\NormalTok{ sd}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(n))}
-\NormalTok{    smry}\SpecialCharTok{$}\NormalTok{type }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(smry}\SpecialCharTok{$}\NormalTok{type)}
-    
-    \CommentTok{\# split mag and likelihood into columns:}
-\NormalTok{    smry\_w    }\OtherTok{\textless{}{-}}\NormalTok{ tidyr}\SpecialCharTok{::}\FunctionTok{spread}\NormalTok{(smry}\SpecialCharTok{\%\textgreater{}\%}
-                                 \FunctionTok{select}\NormalTok{(focus,time\_period,category,type, mn), }
-                               \AttributeTok{key =}\NormalTok{ type, }\AttributeTok{value =}\NormalTok{ mn)}
-\NormalTok{    smry\_wse    }\OtherTok{\textless{}{-}}\NormalTok{ tidyr}\SpecialCharTok{::}\FunctionTok{spread}\NormalTok{(smry}\SpecialCharTok{\%\textgreater{}\%}
-                                 \FunctionTok{select}\NormalTok{(focus,time\_period,category,type, se), }
-                               \AttributeTok{key =}\NormalTok{ type, }\AttributeTok{value =}\NormalTok{ se)}
-\NormalTok{    smry\_wse    }\OtherTok{\textless{}{-}}\NormalTok{ smry\_wse}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{rename}\NormalTok{(}\AttributeTok{likelihoodSE=}\NormalTok{likelihood,}\AttributeTok{magnitudeSE=}\NormalTok{magnitude)}
-\NormalTok{    smry\_wsd    }\OtherTok{\textless{}{-}}\NormalTok{ tidyr}\SpecialCharTok{::}\FunctionTok{spread}\NormalTok{(smry}\SpecialCharTok{\%\textgreater{}\%}
-                                 \FunctionTok{select}\NormalTok{(focus,time\_period,category,type, sd), }
-                               \AttributeTok{key =}\NormalTok{ type, }\AttributeTok{value =}\NormalTok{ sd)}
-\NormalTok{    smry\_wsd    }\OtherTok{\textless{}{-}}\NormalTok{ smry\_wsd}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{rename}\NormalTok{(}\AttributeTok{likelihoodSD=}\NormalTok{likelihood,}\AttributeTok{magnitudeSD=}\NormalTok{magnitude)}
-\NormalTok{    smry\_w }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(smry\_w,smry\_wse,}
-                    \AttributeTok{by=}\FunctionTok{c}\NormalTok{(}\StringTok{"focus"}\NormalTok{,}\StringTok{"time\_period"}\NormalTok{,}\StringTok{"category"}\NormalTok{))}
-\NormalTok{      smry\_w }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(smry\_w,smry\_wsd,}
-                    \AttributeTok{by=}\FunctionTok{c}\NormalTok{(}\StringTok{"focus"}\NormalTok{,}\StringTok{"time\_period"}\NormalTok{,}\StringTok{"category"}\NormalTok{))}
-\NormalTok{    smry\_conf }\OtherTok{\textless{}{-}}\NormalTok{ tidyr}\SpecialCharTok{::}\FunctionTok{spread}\NormalTok{(smry}\SpecialCharTok{\%\textgreater{}\%}
-                                 \FunctionTok{select}\NormalTok{(focus,time\_period,category,type, mn\_conf), }
-                               \AttributeTok{key =}\NormalTok{ type, }\AttributeTok{value =}\NormalTok{ mn\_conf)}
-\NormalTok{    smry\_conf}\SpecialCharTok{$}\NormalTok{mnConf }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(smry\_conf[,}\FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{)],}\DecValTok{1}\NormalTok{,mean)}
-    
-\NormalTok{    smry\_w }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(smry\_w, smry\_conf}\SpecialCharTok{\%\textgreater{}\%}
-                      \FunctionTok{select}\NormalTok{(focus,time\_period,category, mnConf),}
-                    \AttributeTok{by=}\FunctionTok{c}\NormalTok{(}\StringTok{"focus"}\NormalTok{,}\StringTok{"time\_period"}\NormalTok{,}\StringTok{"category"}\NormalTok{))}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{likelihoodCV }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{likelihoodSD}\SpecialCharTok{/}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{likelihood}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{magnitudeCV  }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{magnitudeSD}\SpecialCharTok{/}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{magnitude}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{category }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{"Change in "}\NormalTok{, }\StringTok{""}\NormalTok{, smry\_w}\SpecialCharTok{$}\NormalTok{category)}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{category }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{"Changes in "}\NormalTok{, }\StringTok{""}\NormalTok{, smry\_w}\SpecialCharTok{$}\NormalTok{category)}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{category }\OtherTok{\textless{}{-}} \FunctionTok{gsub}\NormalTok{(}\StringTok{"Changes to "}\NormalTok{, }\StringTok{""}\NormalTok{, smry\_w}\SpecialCharTok{$}\NormalTok{category)}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{cat\_wrap }\OtherTok{\textless{}{-}}\NormalTok{ stringr}\SpecialCharTok{::}\FunctionTok{str\_wrap}\NormalTok{(smry\_w}\SpecialCharTok{$}\NormalTok{category, }\AttributeTok{width=}\DecValTok{30}\NormalTok{)}
-    
-\NormalTok{    mult}\OtherTok{\textless{}{-}}\FloatTok{1.95}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{ylower }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{likelihood}\SpecialCharTok{{-}}\NormalTok{mult}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{likelihoodSE}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{yupper }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{likelihood}\SpecialCharTok{+}\NormalTok{mult}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{likelihoodSE}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{xlower }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{magnitude}\SpecialCharTok{{-}}\NormalTok{mult}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{magnitudeSE}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{xupper }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{magnitude}\SpecialCharTok{+}\NormalTok{mult}\SpecialCharTok{*}\NormalTok{smry\_w}\SpecialCharTok{$}\NormalTok{magnitudeSE}
-  
-    
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{confidence   }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{mnConf}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{uncertainty  }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{$}\NormalTok{mnConf}\SpecialCharTok{\^{}{-}}\DecValTok{1}
-\NormalTok{    smry\_w}\SpecialCharTok{$}\NormalTok{focus        }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(smry\_w}\SpecialCharTok{$}\NormalTok{focus,}\AttributeTok{levels=}\FunctionTok{c}\NormalTok{(}\StringTok{"fisheries"}\NormalTok{,}\StringTok{"aquaculture"}\NormalTok{))}
-\NormalTok{    aqua }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{)}
-\NormalTok{    fish }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{)}
+    \CommentTok{\# check that values match:}
+    \CommentTok{\# long\_a2\%\textgreater{}\%filter(Email == "Mike.rust@noaa.gov",category == "Changes in Spawning timing")}
     
     
+\NormalTok{    long\_f2 }\OtherTok{\textless{}{-}} \FunctionTok{getData\_Impacts}\NormalTok{(}\AttributeTok{datIN =}\NormalTok{ fish2\_dat,}
+                    \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                    \AttributeTok{time\_period  =} \FunctionTok{c}\NormalTok{(}\StringTok{"2021 {-} 2040"}\NormalTok{, }\StringTok{"2041 {-} 2060"}\NormalTok{, }\StringTok{"2060 {-} 2100"}\NormalTok{),}
+                    \AttributeTok{Sector  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fisheries"}\NormalTok{),}
+                    \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                              \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                              \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                              \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                              \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                    \AttributeTok{rmMeanScore =}\NormalTok{ T, }
+                    \AttributeTok{splitIN =} \StringTok{"Mean Score"}\NormalTok{,}
+                    \AttributeTok{adjIN =} \DecValTok{1}\NormalTok{)}
+    
+    
+    \CommentTok{\# mitigation and adaptation}
+\NormalTok{    long\_adapt\_fish   }\OtherTok{\textless{}{-}} \FunctionTok{getData\_adapt}\NormalTok{(adapt\_fish,}
+                                       \AttributeTok{lkupIN =}\NormalTok{ adapt\_fish\_lkup,}
+                                       \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                                       \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                                                  \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                                                  \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                                                  \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                                                  \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                                       \AttributeTok{adjIN =} \DecValTok{4}\NormalTok{)}
+\NormalTok{    long\_adapt\_aqua   }\OtherTok{\textless{}{-}} \FunctionTok{getData\_adapt}\NormalTok{(adapt\_aqua,}
+                                       \AttributeTok{lkupIN =}\NormalTok{ adapt\_aqua\_lkup,}
+                                       \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                                       \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                                                  \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                                                  \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                                                  \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                                                  \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                                       \AttributeTok{adjIN =} \DecValTok{4}\NormalTok{)}
+    
+     \CommentTok{\# combine into single long format:}
+\NormalTok{    long       }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(long\_a,long\_f)}
+\NormalTok{    long\_adapt }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(long\_adapt\_aqua,long\_adapt\_fish)}
+    
+    \DocumentationTok{\#\# Feb 2022 {-} pick up here}
+\NormalTok{    long\_mitigat2     }\OtherTok{\textless{}{-}} \FunctionTok{getData\_adapt}\NormalTok{(}\AttributeTok{datIN  =}\NormalTok{ mitigat\_dat,}
+                                       \AttributeTok{lkupIN =}\NormalTok{ mitigat\_lkup,}
+                                       \AttributeTok{LM  =} \FunctionTok{c}\NormalTok{(}\StringTok{"likelihood"}\NormalTok{,}\StringTok{"magnitude"}\NormalTok{),}
+                                       \AttributeTok{lvls  =} \FunctionTok{c}\NormalTok{(}\StringTok{"Low  {-} My opinion"}\NormalTok{,}
+                                                  \StringTok{"Medium low {-} My opinion and some data"}\NormalTok{,}
+                                                  \StringTok{"Medium {-} Some data and publications by others"}\NormalTok{,}
+                                                  \StringTok{"Medium High {-} My own data, and publications by others"}\NormalTok{,}
+                                                  \StringTok{"High {-} My own data and publications"}\NormalTok{),}
+                                       \AttributeTok{adjIN =} \DecValTok{4}\NormalTok{)}
+    
+    \CommentTok{\# get summaries:}
+\NormalTok{    smry\_f1i }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_impacts}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_f,}
+                                 \AttributeTok{focus   =} \StringTok{"Fisheries"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Fisheries (1st delphi)"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+\NormalTok{    smry\_a1i }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_impacts}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_a,}
+                                 \AttributeTok{focus   =} \StringTok{"Aquaculture"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Aquaculture (1st delphi)"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+\NormalTok{    smry\_f2i }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_impacts}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_f2,}
+                                 \AttributeTok{focus   =} \StringTok{"Fisheries"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Fisheries (2nd delphi)"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+\NormalTok{    smry\_a2i }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_impacts}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_a2,}
+                                 \AttributeTok{focus   =} \StringTok{"Aquaculture"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Aquaculture (2nd delphi)"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+    \CommentTok{\#smry of impacts}
+\NormalTok{    smry\_i }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(smry\_f1i,smry\_a1i,smry\_f2i,smry\_a2i)}
+   
+    
+      \CommentTok{\# get summaries:}
+\NormalTok{    smry\_fish\_adapt }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_adapt\_mit}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_adapt\_fish,}
+                                 \AttributeTok{focus   =} \StringTok{"Fisheries"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Fisheries Adaptation"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+    
+\NormalTok{     smry\_aqua\_adapt }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_adapt\_mit}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_adapt\_aqua,}
+                                 \AttributeTok{focus   =} \StringTok{"Aquaculture"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Aquaculture Adaptation"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+     
+\NormalTok{     smry\_mitigat }\OtherTok{\textless{}{-}} \FunctionTok{get\_smry\_adapt\_mit}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ long\_mitigat2,}
+                                 \AttributeTok{focus   =} \StringTok{"Mitigation"}\NormalTok{,}
+                                 \AttributeTok{Sector2 =} \StringTok{"Fish. \& Aqua. Mitigation"}\NormalTok{, }\AttributeTok{mult =} \FloatTok{1.95}\NormalTok{)}
+\NormalTok{    smry\_am }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(smry\_fish\_adapt,smry\_aqua\_adapt,smry\_mitigat)}
+    
+\NormalTok{    smry\_am}\SpecialCharTok{$}\NormalTok{Sector2 }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(smry\_am}\SpecialCharTok{$}\NormalTok{Sector2,}
+                             \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fisheries Adaptation"}\NormalTok{,}
+                                        \StringTok{"Aquaculture Adaptation"}\NormalTok{,}
+                                        \StringTok{"Fish. \& Aqua. Mitigation"}\NormalTok{))}
+    
+    \FunctionTok{write.table}\NormalTok{(smry\_am,}\AttributeTok{file=}\StringTok{"Data/out/Adapt\_mitigat\_summary.csv"}\NormalTok{,}\AttributeTok{sep =} \StringTok{","}\NormalTok{,}\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{qmethod =} \StringTok{"double"}\NormalTok{)}
+    \FunctionTok{write.table}\NormalTok{(smry\_i,}\AttributeTok{file=}\StringTok{"Data/out/Impacts\_summary.csv"}\NormalTok{,}\AttributeTok{sep =} \StringTok{","}\NormalTok{,}\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{, }\AttributeTok{qmethod =} \StringTok{"double"}\NormalTok{)}
+    \FunctionTok{write.table}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/aquaculture\_cats.csv"}\NormalTok{,}
+              \FunctionTok{unique}\NormalTok{(smry\_i}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Aquaculture"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(Category)),}
+              \AttributeTok{sep =} \StringTok{","}\NormalTok{,}\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{,  }\AttributeTok{qmethod =} \StringTok{"double"}\NormalTok{)}
+   \FunctionTok{write.table}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/fishery\_cats.csv"}\NormalTok{,}
+              \FunctionTok{unique}\NormalTok{(smry\_i}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Fisheries"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(Category)),}
+              \AttributeTok{sep =} \StringTok{","}\NormalTok{,}\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{,  }\AttributeTok{qmethod =} \StringTok{"double"}\NormalTok{)}
+
+   \CommentTok{\# write.csv(file="Data/out/fishery.csv",fish)}
+   \CommentTok{\# write.csv(file="Data/out/aquaculture.csv",aqua)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{now-to-make-some-plots}{%
+\section{Now to make some plots:}\label{now-to-make-some-plots}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
   \CommentTok{\# now make some plots:}
-    
+  
     \CommentTok{\#all points together}
-\NormalTok{   p }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+\NormalTok{   p }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
                                              \AttributeTok{y     =}\NormalTok{ likelihood,}
                                              \AttributeTok{color =}\NormalTok{ confidence,}
-                                             \AttributeTok{shape =}\NormalTok{ focus))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_grid}\NormalTok{(focus}\SpecialCharTok{\textasciitilde{}}\NormalTok{time\_period)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+                                             \AttributeTok{shape =}\NormalTok{ Sector))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+      \FunctionTok{facet\_grid}\NormalTok{(time\_period}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sector2)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
      
-\NormalTok{    sclr }\OtherTok{\textless{}{-}}\NormalTok{.}\DecValTok{75}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_all\_byTimeFrame.png"}\NormalTok{, }
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.05}
+    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_impacts.png"}\NormalTok{, }
         \AttributeTok{width =} \DecValTok{8}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
     \FunctionTok{print}\NormalTok{(p)}
     \FunctionTok{dev.off}\NormalTok{()}
+    
    
-    \CommentTok{\# all points together for fisheries}
-\NormalTok{    p\_fish}\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{),}
-                                   \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+      \CommentTok{\#all points together\%\textgreater{}\%filter(Sector2\%in\%c("Fisheries Adaptation","Aquaculture Adaptation")),}
+\NormalTok{   p\_am }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_am,}
+                                \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+                                    \AttributeTok{y     =}\NormalTok{ likelihood,}
+                                    \AttributeTok{color =}\NormalTok{ confidence,}
+                                    \AttributeTok{shape =}\NormalTok{ Group))}\SpecialCharTok{+}
+     \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+     \FunctionTok{scale\_shape\_manual}\NormalTok{(}\AttributeTok{values =}\NormalTok{ shp\_str[}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{7}\SpecialCharTok{:}\DecValTok{12}\NormalTok{)])}\SpecialCharTok{+}
+     \FunctionTok{facet\_grid}\NormalTok{(Sector2}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+     
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.1}
+    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_adaptmitg.png"}\NormalTok{, }
+        \AttributeTok{width =} \DecValTok{5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(p\_am)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 4 rows containing missing values (geom_point).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \FunctionTok{dev.off}\NormalTok{()}
+    
+    
+     \CommentTok{\#First only points together}
+\NormalTok{   p1 }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}
+                               \FunctionTok{filter}\NormalTok{(Sector2}\SpecialCharTok{\%in\%}
+                                        \FunctionTok{c}\NormalTok{(}\StringTok{"Fisheries (1st delphi)"}\NormalTok{ , }
+                                          \StringTok{"Aquaculture (1st delphi)"}\NormalTok{)),}
+                             \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
                                              \AttributeTok{y     =}\NormalTok{ likelihood,}
-                                             \AttributeTok{color =}\NormalTok{ confidence),}\AttributeTok{shape=}\DecValTok{16}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_grid}\NormalTok{(focus}\SpecialCharTok{\textasciitilde{}}\NormalTok{time\_period)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
-    
-\NormalTok{    p\_aqua }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{),}
-                                   \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+                                             \AttributeTok{color =}\NormalTok{ confidence,}
+                                             \AttributeTok{shape =}\NormalTok{ Sector))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+      \FunctionTok{facet\_grid}\NormalTok{(time\_period}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sector2)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+\NormalTok{   p2 }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}
+                               \FunctionTok{filter}\NormalTok{(Sector2}\SpecialCharTok{\%in\%}
+                                        \FunctionTok{c}\NormalTok{(}\StringTok{"Fisheries (2nd delphi)"}\NormalTok{,}
+                                          \StringTok{"Aquaculture (2nd delphi)"}\NormalTok{)),}
+                             \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
                                              \AttributeTok{y     =}\NormalTok{ likelihood,}
-                                             \AttributeTok{color =}\NormalTok{ confidence),}\AttributeTok{shape=}\DecValTok{17}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_grid}\NormalTok{(focus}\SpecialCharTok{\textasciitilde{}}\NormalTok{time\_period)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
-    
-    
-    \CommentTok{\# Now the top set for each focus:}
-    \CommentTok{\#{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-\NormalTok{    sub }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{,time\_period}\SpecialCharTok{==}\StringTok{"long{-}term"}\NormalTok{)}
-\NormalTok{    cc }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihood}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihood)[}\DecValTok{4}\NormalTok{]}\SpecialCharTok{\&}
-\NormalTok{                  sub}\SpecialCharTok{$}\NormalTok{magnitude}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{magnitude)[}\DecValTok{4}\NormalTok{])}
-\NormalTok{    highest\_aqua }\OtherTok{\textless{}{-}}\NormalTok{ aqua[}\FunctionTok{which}\NormalTok{(aqua}\SpecialCharTok{$}\NormalTok{category}\SpecialCharTok{\%in\%}\NormalTok{sub[cc,]}\SpecialCharTok{$}\NormalTok{category),]}
-    
-\NormalTok{    sub  }\OtherTok{\textless{}{-}}\NormalTok{ smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{,time\_period}\SpecialCharTok{==}\StringTok{"long{-}term"}\NormalTok{)}
-\NormalTok{    cc   }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihood}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihood)[}\DecValTok{4}\NormalTok{]}\SpecialCharTok{\&}
-\NormalTok{                    sub}\SpecialCharTok{$}\NormalTok{magnitude}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{magnitude)[}\DecValTok{4}\NormalTok{])}
-\NormalTok{    highest\_fish }\OtherTok{\textless{}{-}}\NormalTok{ fish[}\FunctionTok{which}\NormalTok{(fish}\SpecialCharTok{$}\NormalTok{category}\SpecialCharTok{\%in\%}\NormalTok{sub[cc,]}\SpecialCharTok{$}\NormalTok{category),]}
-
-\NormalTok{    p\_top\_fish }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{highest\_fish,}
-                            \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}
-                                \AttributeTok{y=}\NormalTok{likelihood,}
-                                \AttributeTok{color=}\NormalTok{confidence,}
-                                \AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap,}\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
-      \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
-    
-\NormalTok{    sclr }\OtherTok{\textless{}{-}}\DecValTok{1}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/top\_fish.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p\_top\_fish)}
+                                             \AttributeTok{color =}\NormalTok{ confidence,}
+                                             \AttributeTok{shape =}\NormalTok{ Sector))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+      \FunctionTok{facet\_grid}\NormalTok{(time\_period}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sector2)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+     
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.05}
+    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_impacts\_1stdephi.png"}\NormalTok{, }
+        \AttributeTok{width =} \FloatTok{5.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(p1)}
+    \FunctionTok{dev.off}\NormalTok{()}
+     \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_impacts\_2nddephi.png"}\NormalTok{, }
+        \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(p2)}
     \FunctionTok{dev.off}\NormalTok{()}
     
-\NormalTok{    p\_top\_aqua }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{highest\_aqua,}
-                            \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}
-                                \AttributeTok{y=}\NormalTok{likelihood,}
-                                \AttributeTok{color=}\NormalTok{confidence,}
-                                \AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap,}\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
-      \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
-
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/top\_aqua.png"}\NormalTok{, }\AttributeTok{width =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p\_top\_aqua)}
-    \FunctionTok{dev.off}\NormalTok{()}
-      
-  
-    \CommentTok{\# now plot the top five most variable (based on SE)}
-    \CommentTok{\#{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-\NormalTok{    sub }\OtherTok{\textless{}{-}}\NormalTok{ aqua }\CommentTok{\#\%\textgreater{}\%filter(time\_period=="long{-}term")}
-\NormalTok{    cc  }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihoodCV}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihoodCV)[}\DecValTok{4}\NormalTok{]}\SpecialCharTok{\&}
-\NormalTok{                   sub}\SpecialCharTok{$}\NormalTok{magnitudeCV}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{magnitudeCV)[}\DecValTok{4}\NormalTok{])}
-\NormalTok{    highest\_aquaSE }\OtherTok{\textless{}{-}}\NormalTok{ aqua[}\FunctionTok{which}\NormalTok{(aqua}\SpecialCharTok{$}\NormalTok{category}\SpecialCharTok{\%in\%}\NormalTok{sub[cc,]}\SpecialCharTok{$}\NormalTok{category),]}
+\NormalTok{    p\_fish }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}
+                               \FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Fisheries"}\NormalTok{),}
+                             \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+                                             \AttributeTok{y     =}\NormalTok{ likelihood,}
+                                             \AttributeTok{color =}\NormalTok{ confidence,}
+                                             \AttributeTok{shape =}\NormalTok{ Sector))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+      \FunctionTok{facet\_grid}\NormalTok{(time\_period}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sector2)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
     
-\NormalTok{    sub  }\OtherTok{\textless{}{-}}\NormalTok{ fish}\CommentTok{\#\%\textgreater{}\%filter(time\_period=="long{-}term")}
-\NormalTok{    cc  }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihoodCV}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{likelihoodCV)[}\DecValTok{4}\NormalTok{]}\SpecialCharTok{\&}
-\NormalTok{                   sub}\SpecialCharTok{$}\NormalTok{magnitudeCV}\SpecialCharTok{\textgreater{}}\FunctionTok{quantile}\NormalTok{(sub}\SpecialCharTok{$}\NormalTok{magnitudeCV)[}\DecValTok{4}\NormalTok{])}
-\NormalTok{    highest\_fishSE }\OtherTok{\textless{}{-}}\NormalTok{ fish[}\FunctionTok{which}\NormalTok{(fish}\SpecialCharTok{$}\NormalTok{category}\SpecialCharTok{\%in\%}\NormalTok{sub[cc,]}\SpecialCharTok{$}\NormalTok{category),]}
-    
-    \CommentTok{\# plot the top set of fisheries }
-\NormalTok{    p\_top\_fishSE }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{highest\_fishSE)}\SpecialCharTok{+}
-      \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                     \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-      \FunctionTok{geom\_linerange}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                         \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{ymin =}\NormalTok{ ylower, }\AttributeTok{ymax =}\NormalTok{ yupper))}\SpecialCharTok{+}
-      \FunctionTok{geom\_errorbarh}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                         \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{xmin =}\NormalTok{ xlower,}\AttributeTok{xmax =}\NormalTok{ xupper))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap,}\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
-      \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
-    
-\NormalTok{    sclr }\OtherTok{\textless{}{-}}\DecValTok{1}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/top\_fish\_var.png"}\NormalTok{,}
-        \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p\_top\_fishSE)}
-    \FunctionTok{dev.off}\NormalTok{()}
-    
-     \CommentTok{\# plot the top set of aquaculture }
-\NormalTok{    p\_top\_aquaSE }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{highest\_aquaSE)}\SpecialCharTok{+}
-      \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                     \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-      \FunctionTok{geom\_linerange}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                         \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{ymin =}\NormalTok{ ylower, }\AttributeTok{ymax =}\NormalTok{ yupper))}\SpecialCharTok{+}
-      \FunctionTok{geom\_errorbarh}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                         \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{xmin =}\NormalTok{ xlower,}\AttributeTok{xmax =}\NormalTok{ xupper))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap,}\AttributeTok{nrow=}\DecValTok{2}\NormalTok{)}\SpecialCharTok{+}
-      \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
-      \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
-
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/top\_aqua\_var.png"}\NormalTok{, }\AttributeTok{width =} \DecValTok{7}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p\_top\_aquaSE)}
-    \FunctionTok{dev.off}\NormalTok{()}
-      
-      
-      
-    \CommentTok{\# p\_aqua\_txt \textless{}{-} p\_aqua + geom\_text(data=sub,aes(x = magnitude,}
-    \CommentTok{\#                                          y     = likelihood,}
-    \CommentTok{\#                                          label = cat\_wrap,}
-    \CommentTok{\#                                          color = confidence))}
-    \CommentTok{\# geom\_text(data=smry\_w,aes(x=magnitude,y=likelihood,color=mnConf,shape=focus)}
-\NormalTok{    sclr }\OtherTok{\textless{}{-}}\NormalTok{.}\DecValTok{75}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1a\_aqua\_byTimeFrame.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p\_aqua)}
-    \FunctionTok{dev.off}\NormalTok{()}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1b\_fish\_byTimeFrame.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+\NormalTok{    p\_aqua}\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}
+                               \FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Aquaculture"}\NormalTok{),}
+                             \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
+                                             \AttributeTok{y     =}\NormalTok{ likelihood,}
+                                             \AttributeTok{color =}\NormalTok{ confidence,}
+                                             \AttributeTok{shape =}\NormalTok{ Sector))}\SpecialCharTok{+}
+      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+      \FunctionTok{facet\_grid}\NormalTok{(time\_period}\SpecialCharTok{\textasciitilde{}}\NormalTok{Sector2)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}
+   
+     
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.05}
+    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_impacts\_fish.png"}\NormalTok{, }
+        \AttributeTok{width =} \FloatTok{5.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
     \FunctionTok{print}\NormalTok{(p\_fish)}
     \FunctionTok{dev.off}\NormalTok{()}
-    
-\NormalTok{    p2\_aqua }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{),}
-                            \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
-                                \AttributeTok{y     =}\NormalTok{ likelihood,}
-                                \AttributeTok{color =}\NormalTok{ confidence,}
-                                \AttributeTok{shape =}\NormalTok{ time\_period))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
-       
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/plot\_all\_aqua.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p2\_aqua)}
+     \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/Fig1\_impacts\_aqua.png"}\NormalTok{, }
+        \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \FloatTok{4.5}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+    \FunctionTok{print}\NormalTok{(p\_aqua)}
     \FunctionTok{dev.off}\NormalTok{()}
-    
-\NormalTok{    p2\_fish }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}\FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{),}
-                            \FunctionTok{aes}\NormalTok{(}\AttributeTok{x     =}\NormalTok{ magnitude,}
-                                \AttributeTok{y     =}\NormalTok{ likelihood,}
-                                \AttributeTok{color =}\NormalTok{ confidence,}
-                                \AttributeTok{shape =}\NormalTok{ time\_period))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/plot\_all\_fish.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p2\_fish)}
-    \FunctionTok{dev.off}\NormalTok{()}
+  
+\NormalTok{p\_eachC\_fish }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Fisheries"}\NormalTok{, Sector2 }\SpecialCharTok{==} \StringTok{"Fisheries (1st delphi)"}\NormalTok{),}
+                                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}
+                                      \AttributeTok{y=}\NormalTok{likelihood,}
+                                      \AttributeTok{color=}\NormalTok{confidence,}
+                                      \AttributeTok{shape=}\NormalTok{time\_period),}\AttributeTok{alpha =}\NormalTok{ .}\DecValTok{3}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Fisheries"}\NormalTok{, Sector2 }\SpecialCharTok{==} \StringTok{"Fisheries (2nd delphi)"}\NormalTok{),}
+                                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}
+                                      \AttributeTok{y=}\NormalTok{likelihood,}
+                                      \AttributeTok{color=}\NormalTok{confidence,}
+                                      \AttributeTok{shape=}\NormalTok{time\_period),}\AttributeTok{alpha =} \DecValTok{1}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap,}\AttributeTok{nrow=}\DecValTok{4}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
 
-   
-     \CommentTok{\#same plot with confidence as size of "+"}
-\NormalTok{     p2\_fish\_SD}\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}
-                           \FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{))}\SpecialCharTok{+}
-       \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                      \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-        \FunctionTok{geom\_linerange}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                           \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{ymin =}\NormalTok{ ylower, }\AttributeTok{ymax =}\NormalTok{ yupper))}\SpecialCharTok{+}
-       \FunctionTok{geom\_errorbarh}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                          \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{xmin =}\NormalTok{ xlower,}\AttributeTok{xmax =}\NormalTok{ xupper))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-       \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/plot\_all\_fish\_SE.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p2\_fish\_SD)}
-    \FunctionTok{dev.off}\NormalTok{()}
-    
-    \CommentTok{\#same plot with confidence as size of "+"}
-\NormalTok{     p2\_aqua\_SD}\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_w}\SpecialCharTok{\%\textgreater{}\%}
-                           \FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{))}\SpecialCharTok{+}
-       \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                      \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{shape=}\NormalTok{time\_period))}\SpecialCharTok{+}
-        \FunctionTok{geom\_linerange}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                           \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{ymin =}\NormalTok{ ylower, }\AttributeTok{ymax =}\NormalTok{ yupper))}\SpecialCharTok{+}
-       \FunctionTok{geom\_errorbarh}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}\AttributeTok{y=}\NormalTok{likelihood,}
-                          \AttributeTok{color=}\NormalTok{confidence,}\AttributeTok{xmin =}\NormalTok{ xlower,}\AttributeTok{xmax =}\NormalTok{ xupper))}\SpecialCharTok{+}
-      \FunctionTok{scale\_color\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
-      \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}\FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
-       \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}
-    \FunctionTok{png}\NormalTok{(}\StringTok{"Figs/plot\_all\_aqua\_SE.png"}\NormalTok{, }
-        \AttributeTok{width =} \DecValTok{8}\NormalTok{, }\AttributeTok{height =}\DecValTok{8}\NormalTok{, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
-    \FunctionTok{print}\NormalTok{(p2\_aqua\_SD)}
-    \FunctionTok{dev.off}\NormalTok{()}
-    
-    \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/aquaculture\_cats.csv"}\NormalTok{,}
-              \FunctionTok{unique}\NormalTok{(smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"aquaculture"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(category)))}
-    \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/fishery\_cats.csv"}\NormalTok{,}
-              \FunctionTok{unique}\NormalTok{(smry\_w}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"fisheries"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{select}\NormalTok{(category)))}
-   
-   \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/fishery.csv"}\NormalTok{,fish)}
-   \FunctionTok{write.csv}\NormalTok{(}\AttributeTok{file=}\StringTok{"Data/out/aquaculture.csv"}\NormalTok{,aqua)}
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.5}
+\FunctionTok{png}\NormalTok{(}\StringTok{"Figs/each\_impacts\_fish.png"}\NormalTok{, }
+    \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(p\_eachC\_fish)}
+\FunctionTok{dev.off}\NormalTok{()}
    \CommentTok{\# add type (and range)}
+
+
+ 
+\NormalTok{p\_eachC\_aqua }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{()}\SpecialCharTok{+}
+  \CommentTok{\# geom\_point(data=smry\_i\%\textgreater{}\%filter(focus=="Aquaculture", Sector2 == "Aquaculture (1st delphi)"),}
+  \CommentTok{\#                                 aes(x=magnitude,}
+  \CommentTok{\#                                     y=likelihood,}
+  \CommentTok{\#                                     color=confidence,}
+  \CommentTok{\#                                     shape=time\_period),alpha = .3)+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data=}\NormalTok{smry\_i}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(focus}\SpecialCharTok{==}\StringTok{"Aquaculture"}\NormalTok{, Sector2 }\SpecialCharTok{==} \StringTok{"Aquaculture (2nd delphi)"}\NormalTok{),}
+                                  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{magnitude,}
+                                      \AttributeTok{y=}\NormalTok{likelihood,}
+                                      \AttributeTok{color=}\NormalTok{confidence,}
+                                      \AttributeTok{shape=}\NormalTok{time\_period),}\AttributeTok{alpha =} \DecValTok{1}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_viridis\_c}\NormalTok{(}\AttributeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\AttributeTok{end =} \DecValTok{0}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{facet\_grid}\NormalTok{(Sector}\SpecialCharTok{\textasciitilde{}}\NormalTok{cat\_wrap)}\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{5}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{xlim}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{10}\NormalTok{) }\SpecialCharTok{+}\FunctionTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{)}\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust=}\DecValTok{1}\NormalTok{))}
+
+\NormalTok{    sclr }\OtherTok{\textless{}{-}}\FloatTok{1.5}
+\FunctionTok{png}\NormalTok{(}\StringTok{"Figs/each\_impacts\_aqua.png"}\NormalTok{, }
+    \AttributeTok{width =} \DecValTok{6}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{height =} \DecValTok{3}\SpecialCharTok{*}\NormalTok{sclr, }\AttributeTok{units =} \StringTok{"in"}\NormalTok{,}\AttributeTok{res =} \DecValTok{350}\NormalTok{)}
+\FunctionTok{print}\NormalTok{(p\_eachC\_aqua)}
+\FunctionTok{dev.off}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 

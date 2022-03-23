@@ -45,16 +45,11 @@ that activity and produces the plots and results summarized in the
 WKCLIMAD report. The code below will generate the following plots:
 
 <figure>
-<img src="Figs/Fig1_all_byTimeFrame.png" style="width:65.0%" alt="Results of the first round of Delphi surveys." /><figcaption aria-hidden="true">Results of the first round of Delphi surveys.</figcaption>
+<img src="Figs/Fig1_impacts_1stdephi.png" style="width:65.0%" alt="Results of the first round of Delphi surveys." /><figcaption aria-hidden="true">Results of the first round of Delphi surveys.</figcaption>
 </figure>
 
-<figure>
-<img src="Figs/plot_all_aqua.png" style="width:100.0%" alt="Results by category for Aquaculture" /><figcaption aria-hidden="true">Results by category for Aquaculture</figcaption>
-</figure>
-
-<figure>
-<img src="Figs/plot_all_fish.png" style="width:100.0%" alt="Results by category for Fisheries" /><figcaption aria-hidden="true">Results by category for Fisheries</figcaption>
-</figure>
+<!-- ![Results by category for Aquaculture](Figs/plot_all_aqua.png){width=100%} -->
+<!-- ![Results by category for Fisheries](Figs/plot_all_fish.png){width=100%} -->
 
 To generate the plots above run the following code in R (be sure your
 workspace is within your local `WKCLIMAD` folder):
@@ -222,7 +217,7 @@ workspace is within your local `WKCLIMAD` folder):
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
      
     sclr <-1.05
@@ -246,6 +241,11 @@ workspace is within your local `WKCLIMAD` folder):
     png("Figs/Fig1_adaptmitg.png", 
         width = 5*sclr, height = 5*sclr, units = "in",res = 350)
     print(p_am)
+```
+
+    ## Warning: Removed 4 rows containing missing values (geom_point).
+
+``` r
     dev.off()
     
     
@@ -258,7 +258,7 @@ workspace is within your local `WKCLIMAD` folder):
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
    p2 <-  ggplot()+geom_point(data=smry_i%>%
                                filter(Sector2%in%
@@ -268,7 +268,7 @@ workspace is within your local `WKCLIMAD` folder):
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
      
     sclr <-1.05
@@ -287,7 +287,7 @@ workspace is within your local `WKCLIMAD` folder):
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
     
     p_aqua<- ggplot()+geom_point(data=smry_i%>%
@@ -296,7 +296,7 @@ workspace is within your local `WKCLIMAD` folder):
                                              y     = likelihood,
                                              color = confidence,
                                              shape = Sector))+
-      scale_color_viridis_c()+
+      scale_color_viridis_c(begin=.9,end = 0)+
       facet_grid(time_period~Sector2)+theme_minimal()
    
      
@@ -321,7 +321,7 @@ p_eachC_fish <- ggplot()+
                                       y=likelihood,
                                       color=confidence,
                                       shape=time_period),alpha = 1)+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(begin=.9,end = 0)+
   facet_wrap(.~cat_wrap,nrow=4)+
   theme_minimal()+ 
   theme(strip.text = element_text(size = 5))+
@@ -348,7 +348,7 @@ p_eachC_aqua <- ggplot()+
                                       y=likelihood,
                                       color=confidence,
                                       shape=time_period),alpha = 1)+
-  scale_color_viridis_c()+
+  scale_color_viridis_c(begin=.9,end = 0)+
   facet_grid(Sector~cat_wrap)+
   theme_minimal()+ 
   theme(strip.text = element_text(size = 5))+

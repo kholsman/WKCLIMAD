@@ -58,18 +58,18 @@ We expect this to be a popular workshop and therefore may have to limit the numb
 
 In August 2021 multiple experts provided a rapid assessment of climate impacts via a Delphi approach. The code below analyses the output from that activity and produces the plots and results summarized in the WKCLIMAD report. The code below will generate the following plots:
 
-![Results of the first round of Delphi surveys.](Figs/Fig1_all_byTimeFrame.png){width=65%}
+![Results of the first round of Delphi surveys.](Figs/Fig1_impacts_1stdephi.png){width=65%}
 
 
-![Results by category for Aquaculture](Figs/plot_all_aqua.png){width=100%}
+<!-- ![Results by category for Aquaculture](Figs/plot_all_aqua.png){width=100%} -->
 
 
 
-![Results by category for Fisheries](Figs/plot_all_fish.png){width=100%}
+<!-- ![Results by category for Fisheries](Figs/plot_all_fish.png){width=100%} -->
 
 To generate the plots above run the following code in R (be sure your workspace is within your local `WKCLIMAD` folder):
 
-```{r summarizeResults, echo=TRUE, eval=F, include =T}
+```{r summarizeResults, echo=TRUE, eval=TRUE, include =T,results='hide',message=FALSE}
 
    # getwd()  should return something like:
    # "/Users/username/Documents/GitHub/WKCLIMAD"
@@ -228,7 +228,7 @@ To generate the plots above run the following code in R (be sure your workspace 
 
 # Now to make some plots:
 
-```{r plotResults, echo=TRUE, eval=F, include =T}
+```{r plotResults, echo=T, eval=T, include =T,results='hide',message=FALSE}
     
   # now make some plots:
   
