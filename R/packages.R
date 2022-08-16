@@ -18,7 +18,14 @@ lib_list <- c(
   "dplyr", 
   "purrr",
   "readxl", 
-  #"tidyverse",
+  
+  # these for network plotting
+  "visNetwork",
+  "networkD3",
+  "network" ,
+  "tidyverse",
+  "tidygraph",
+  "ggraph",
 #  "usethis",
   
   # # these for ggplot mapping:
