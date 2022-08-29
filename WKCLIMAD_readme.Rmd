@@ -1,0 +1,102 @@
+---
+title: "WKCLIMAD Network Models"
+author: 
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    includes:
+      after_body: Figs/ChordPlot.html
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
+---
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+
+source("R/make.R")       # loads packages, data, setup, etc.
+knitr::opts_chunk$set(echo = T, fig.align="center")
+thisYr <- format(Sys.time(), "%Y")
+today  <- format(Sys.time(), "%b %d, %Y")
+tmstp  <- format(Sys.time(), "%Y_%m_%d")
+```
+
+
+# 1. WKCLIMAD Overview
+
+This repository contains R code and Rdata files for working with WKCLIMAD data and responses. WKCLIMAD is an ICES workshop aimed at exploring how can the short-, medium-, and long-term influences of climate change on aquaculture, fisheries, and ecosystems be accounted for in ICES Advice.
+
+More information about WKCLIMAD can be found here:https://www.ices.dk/community/groups/Pages/WKCLIMAD.aspx
+
+
+# 2. Visualizing the results
+
+The interactive shiny() is downloadable by entering the following lines of code into R().
+
+
+```{r model1, echo=T, include=T, eval=F, include=F,message=F}
+#'Run the WKCLIMAD results
+#'
+#'https://github.com/kholsman/WKCLIMAD
+
+missing <- setdiff("shiny", installed.packages()[, 1])
+if (length(missing) > 0) install.packages(missing)
+
+# Load libraries:
+for(lib in c("shiny"))
+  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
+
+runGitHub( "WKCLIMAD", "kholsman")
+
+
+```
+
+```{r sfint-shiny}
+knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/", 
+  height = "900px")
+```
+
+
+## 3. Chord Diagram
+
+<!-- ```{r showChoro1,echo=F} -->
+<!-- # All defaults -->
+<!-- htmltools::includeHTML("Figs/ChordPlot.html") -->
+<!-- # include_graphics("Figs/ForcePlot.html") -->
+<!-- ``` -->
+
+## 4. Force Diagram
+
+<!-- ```{r showChoro2,echo=F} -->
+<!-- htmltools::includeHTML("Figs/ForcePlot.html") -->
+<!-- ``` -->
+
+## 5. Sankey Diagram
+
+<!-- ```{r showChoro3,echo=F} -->
+<!--  htmltools::includeHTML("Figs/SankeyPlot.html") -->
+<!-- ``` -->
+
+```{r makeReadME, echo=FALSE,eval=F, include =F}
+
+# copy and paste this into R window (won't work within markdown)
+rmd2md(rmd_fl = "WKCLIMAD_readme",md_fl = "README")
+
+```
+
