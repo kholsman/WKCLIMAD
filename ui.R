@@ -1,51 +1,11 @@
 #----------------------------------------
-# CCTF Timeline
+# WKCLIMAD 
 # Kirstin Holsman 2022
 #
 #----------------------------------------
-# remember you have to put the libraries here! Can't load from the make.R
-# 
+# remember you have to put the libraries here as library()! Can't load from the make.R
+# also will load devtools installed libs
 # library("shiny" )
-lib_list <- c(
-  "devtools",
-  # "svMisc",
-  # "reshape",
-  # "reshape2",
-  "dplyr", 
-  # "purrr",
-  "readxl", 
-  "visNetwork",
-  "networkD3",
-  "network" ,
-  "tidyverse",
-  "tidygraph",
-  "ggraph",
-  # "knitr",
-  # "kableExtra",
-  "RColorBrewer",
-  "viridis",
-  # "stringr",
-  "ggplot2", 
-  
-  "treemapify",
-  # "mgcv",
-  # "cowplot",               # 
-  # "wesanderson",
-  "plotly",
-  "extrafont",
-  "webshot",
-  "gdtools",
-  "hrbrthemes",
-  "shinyjs",
-  "magick"
-  # nefsc shiny
-  # "DiagrammeR","circlize",
-  #"QPress",
-  # "chorddiag", 
-  # "kableExtra", "googledrive",
-  # "DT"
-)
-
 library(devtools)
 library(dplyr)
 library(extrafont)

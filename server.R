@@ -1,65 +1,12 @@
 
-
-# remember you have to put the libraries here! Can't load from the make.R
+#----------------------------------------
+# WKCLIMAD 
+# Kirstin Holsman 2022
+#
+#----------------------------------------
+# remember you have to put the libraries here as library()! Can't load from the make.R
+# also will load devtools installed libs
 # library("shiny" )
-# library("tidygraph")
-# library("visNetwork")
-# library("networkD3")
-# library("ggraph")
-# library("igraph")
-# library("ggrepel")
-# library("network")
-# library("lubridate")
-# library("tidyverse")
-# library("reshape2")
-# library("igraph")
-# # load libraries
-# library("plotly")  # interactive plots
-# library("stringi") # used to wrap text strings in labels
-# library("dplyr")    # used for manipulating datasets
-# library("readxl")             # used for reading xls input files
-# 
-# 
-# library("RColorBrewer")
-# library("chorddiag")
-# library("shinyWidgets")
-# # library# install.packages("treemapify")
-# library("treemapify")
-# library("treemap")
-# #library(d3treeR)
-# library("shiny" )
-lib_list <- c(
-  "devtools",
-  # "svMisc",
-  # "reshape",
-  # "reshape2",
-  "dplyr", 
-  # "purrr",
-  "readxl", 
-  "visNetwork",
-  "networkD3",
-  "network" ,
-  "tidyverse",
-  "tidygraph",
-  "ggraph",
-  # "knitr",
-  # "kableExtra",
-  "RColorBrewer",
-  "viridis",
-  # "stringr",
-  "ggplot2", 
-  "treemapify",
-  # "mgcv",
-  # "cowplot",               # 
-  # "wesanderson",
-  "plotly",
-  "extrafont",
-  "webshot",
-  "gdtools",
-  "hrbrthemes",
-  "shinyjs",
-  "magick"
-)
 library(devtools)
 library(dplyr)
 library(extrafont)
