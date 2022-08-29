@@ -1,11 +1,15 @@
 #load_data.R
 # 
-source("R/packages.R")       # loads packages
-source("R/setup.R")          # load other switches and controls
-source("R/load_functions.R") # defines the create_plot() function
 
 # Load base files:
 #----------------------
+
+# data.in            <-  file.path("Data/in")
+# data.out           <-  file.path("Data/out")
+# data.models        <-  file.path(data.out,"networkmodels")
+# outfile.fig        <-  file.path("Figs/")
+source("R/setup.R")
+
 aqua_dat <- suppressMessages(readxl::read_xlsx(file.path(data.in,"first_delphi/Aquaculture_impacts_due_to_Clim2021-09-23_19_36_33.xlsx")))
 fish_dat <- suppressMessages(readxl::read_xlsx(file.path(data.in,"first_delphi/Fisheries_impacts_due_to_Climat2021-09-23_19_35_33.xlsx")))
 

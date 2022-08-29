@@ -46,26 +46,47 @@ lib_list <- c(
   # "DT"
 )
 
-
+library(devtools)
+library(dplyr)
+library(extrafont)
+library(gdtools)
+library(ggplot2)
+library(ggraph)
+library(hrbrthemes)
+library(magick)
+library(network)
+library(networkD3)
+library(plotly)
+library(RColorBrewer)
+library(readxl)
+library(shinyjs)
+library(tidygraph)
+library(tidyverse)
+library(treemapify)
+library(viridis)
+library(visNetwork)
+library(webshot)
+library(chorddiag)
 # Install missing libraries:
 # missing <- setdiff(lib_list, installed.packages()[, 1])
 # if (length(missing) > 0) install.packages(missing)
-
-# Load libraries:
-for(lib in lib_list)
-  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
-
-
-missing <- setdiff("chorddiag", installed.packages()[, 1])
-if (length(missing) > 0) devtools::install_github("mattflor/chorddiag")
-# missing <- setdiff("bsselectR", installed.packages()[, 1])
-# if (length(missing) > 0) devtools::install_github("walkerke/bsselectR")
+# 
 # # Load libraries:
-# for(lib in c("chorddiag","bsselectR"))
-for(lib in c("chorddiag"))
-  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
+# for(lib in lib_list)
+#   suppressMessages(eval(parse(text=paste("library(",lib,")"))))
+# 
+# # missing <- setdiff("chorddiag", installed.packages()[, 1])
+# # if (length(missing) > 0) devtools::install_github("mattflor/chorddiag")
+# for(lib in c("chorddiag"))
+#   suppressMessages(eval(parse(text=paste("library(",lib,")"))))
 
-suppressMessages(source("R/make.R"))
+
+#source("R/packages.R")       # loads packages
+source("R/setup.R")          # load other switches and controls
+source("R/load_functions.R") # defines the create_plot() function
+source("R/load_data.R")      # load other switches and controls
+
+# suppressMessages(source("R/make.R"))
 
 #source("R/sub_scripts/ntwk_analysis.R")
 
