@@ -14,13 +14,33 @@ here:<https://www.ices.dk/community/groups/Pages/WKCLIMAD.aspx>
 The interactive shiny() is downloadable by entering the following lines
 of code into R().
 
+``` r
+#'Run the WKCLIMAD results
+#'
+#'https://github.com/kholsman/WKCLIMAD
+
+missing <- setdiff("shiny", installed.packages()[, 1])
+if (length(missing) > 0) install.packages(missing)
+
+# Load libraries:
+for(lib in c("shiny"))
+  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
+
+runGitHub( "WKCLIMAD", "kholsman")
+```
+
+<!-- ```{r sfint-shiny} -->
+<!-- knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/",  -->
+<!--   height = "900px") -->
+<!-- ``` -->
+
 ## 3. Chord Diagram
 
-```{r showChoro1,echo=F} -->
+<!-- ```{r showChoro1,echo=F} -->
 <!-- # All defaults -->
-htmltools::includeHTML("Figs/ChordPlot.html") -->
+<!-- htmltools::includeHTML("Figs/ChordPlot.html") -->
 <!-- # include_graphics("Figs/ForcePlot.html") -->
-``` -->
+<!-- ``` -->
 
 ## 4. Force Diagram
 

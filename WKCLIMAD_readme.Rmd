@@ -2,22 +2,6 @@
 title: "WKCLIMAD Network Models"
 author: 
 output:
-  html_document:
-    includes:
-      after_body: Figs/ChordPlot.html
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -26,6 +10,22 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    includes:
+      after_body: Figs/ChordPlot.html
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -50,7 +50,7 @@ More information about WKCLIMAD can be found here:https://www.ices.dk/community/
 The interactive shiny() is downloadable by entering the following lines of code into R().
 
 
-```{r model1, echo=T, include=T, eval=F, include=F,message=F}
+```{r model1, echo=T, include=T, eval=F,message=F}
 #'Run the WKCLIMAD results
 #'
 #'https://github.com/kholsman/WKCLIMAD

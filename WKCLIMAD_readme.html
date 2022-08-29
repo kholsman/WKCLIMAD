@@ -253,6 +253,18 @@ div.tocify {
 <div id="visualizing-the-results" class="section level1">
 <h1>2. Visualizing the results</h1>
 <p>The interactive shiny() is downloadable by entering the following lines of code into R().</p>
+<pre class="r"><code>#&#39;Run the WKCLIMAD results
+#&#39;
+#&#39;https://github.com/kholsman/WKCLIMAD
+
+missing &lt;- setdiff(&quot;shiny&quot;, installed.packages()[, 1])
+if (length(missing) &gt; 0) install.packages(missing)
+
+# Load libraries:
+for(lib in c(&quot;shiny&quot;))
+  suppressMessages(eval(parse(text=paste(&quot;library(&quot;,lib,&quot;)&quot;))))
+
+runGitHub( &quot;WKCLIMAD&quot;, &quot;kholsman&quot;)</code></pre>
 <!-- ```{r sfint-shiny} -->
 <!-- knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/",  -->
 <!--   height = "900px") -->
