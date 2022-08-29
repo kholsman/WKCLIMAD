@@ -12,18 +12,18 @@
 #' csv_file <- file.path("data/shiny",modlist[1])
 #' readxl::read_xlsx(path=file.path(
 #'  
-read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_1.xlsx",
-                       sheet_fl   = "frame8_aqua_1_1",
+read_model <- function(fl         = "Data/in/flow diagrams/mentalmodels",
+                       model   = "Fish_1_1",
                        sizeIN     = 16, 
                        linkcolby  = "source",
                        NAval      = NA,
-                       lkup       = "meta_data",
-                       lkup_Sheet_adapt ="adapt_meta"){
+                       lkup       = "../Day5_MetaData.xlsx",
+                       lkup_Sheet_adapt ="meta_data"){
   
   
-  df <- readxl::read_xlsx(path=fl,
-    sheet =sheet_fl, col_names =T)
-  
+
+  df <- read.csv(file.path(fl,paste0(model,".csv")), header=T)
+  colnames(df) <- df[,1]
   df[is.na(df)] <- NAval
   colnames(df)[1] <- "ID"
   
@@ -31,30 +31,33 @@ read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_
   names(links)        <- c("source","destination","value")
   links$source        <- as.character(links$source)
   links$destination   <- as.character(links$destination)
-  links$value[which(links$value==0)] <-0.1
+
+  #links$value[which(links$value==0)] <-0.1
   
   # create links and nodes:
   # sources <- links %>%
   #   distinct(source) %>%
   #   rename(label = source)
-  # 
+  
   # destinations <- links %>%
   #   distinct(destination) %>%
   #   rename(label = destination)
   
- # nodes <- full_join(sources, destinations, by = "label")
-  # From these flows we need to create a node data frame: it lists every entities involved in the flow
-  nodes <- data.frame(
-    label=c(as.character(links$source), as.character(links$destination)) %>% 
-      unique()
-  )%>%rowid_to_column("id")
+  # nodes <- full_join(sources, destinations, by = "label")
+  # From these flows we need to create a node data frame: 
+  # it lists every entities involved in the flow
   
-
-  # With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+  nodes <- data.frame(
+    label=c(as.character(links$source), 
+            as.character(links$destination)) %>% 
+      unique())%>%rowid_to_column("id")
+  
+  # With networkD3, connection must be provided using id, not using real 
+  # name like in the links dataframe.. So we need to reformat it.
+  
   links$IDsource      <- match(links$source, nodes$label)-1 
   links$IDdestination <- match(links$destination, nodes$label)-1
-  
-  # 
+ 
   # # Make the Network
   p <- sankeyNetwork(Links = links, Nodes = nodes,
                      Source = "IDsource", Target = "IDdestination",
@@ -71,10 +74,10 @@ read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_
     
   links <- links %>%  
     left_join(per_route, by = c("source" = "source"))
-  
-  nodes <- nodes %>%  
+
+  nodes <- nodes %>%
     left_join(per_route, by = c("label" = "source"))
-  
+
   
   per_route <- links %>%  
     group_by(destination) %>%
@@ -87,28 +90,21 @@ read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_
   nodes <- nodes %>%  
     left_join(per_route, by = c("label" = "destination"))
   
-  
-  # #value (where negative or positive connections are the weights)
-  # per_route <- links %>% 
-  #   group_by(source) %>%
-  #   summarise(weight = abs(value)) %>% 
-  #   ungroup()
-  
-  
-
-  
+  tblall<-NA
   if(!is.null(lkup)){
-    tbl <- readxl::read_xlsx(path=fl,
-                             sheet =lkup_Sheet, col_names =T)
-    tbl <- tbl%>%filter(Sheet == sheet_fl)  #distinct(ID,Type)
-    tbl$Sheet  <- as.factor(tbl$Sheet)
-    tbl$Type  <- as.factor(tbl$Type)
+    tbl_meta <- na.omit(readxl::read_xlsx(path=file.path(fl,lkup),range = "A1:C500",
+                                  sheet ="lkup_tables", col_names =T))
+    tbl      <- readxl::read_xlsx(path=file.path(fl,lkup),
+                                  sheet =lkup_Sheet_adapt, col_names =T)
+    tbl <- tbl%>%filter(plotID!="NA")
+    tblall <- tbl
+    
+    tbl <- tbl%>%filter(Model == model)  #distinct(ID,Type)
+    tbl$Model  <- as.factor(tbl$Model)
+    tbl$Type   <- as.factor(tbl$Type)
     tbl$levels <- as.numeric(tbl$Type)
-
-
+   
     nodes  <- nodes%>%left_join(tbl,by =c("label" = "ID"))
-    
-    
     eval(parse(text=paste0(
     "links  <- links%>%left_join(tbl,by =c(",linkcolby," = 'ID'))")))
     
@@ -132,22 +128,32 @@ read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_
     nodes$icon   <-NULL
     nodes$Category <-""
   }
-  
 
+  nodes <- nodes%>%filter(!is.na(plotID ))
+  # %>%mutate(value=weight_source)
+  # nodes$value[is.na(nodes$value)]<-0
+  edges <- links %>%
+    left_join(nodes%>%select(id,label), by = c("source" = "label")) %>% 
+    mutate(from = IDsource,to = IDdestination)%>%filter(!is.na(source),!is.na(destination))
+  
   edges2    <- edges%>%
     select(from, to, weight_source)%>%
     mutate(width = weight_source/5 + 1)
     
-  nodes_d3  <- nodes
-  #nodes_d3 <- mutate(nodes, id = id - 1)
+  nodes_d3 <- nodes
+  nodes_d3 <- mutate(nodes, id = id - 1)
   edges_d3 <- mutate(edges2, from = from - 1, to = to - 1)
   nodesVis <- nodes%>%mutate(font.size = sizeIN*3)
   
+  #out_network <- network(edges, vertex.attr = nodes, matrix.type = "edgelist", ignore.eval = FALSE)
   
- # out_network <- network(edges, vertex.attr = nodes, matrix.type = "edgelist", ignore.eval = FALSE)
+ # out_network <- network(edges2, vertex.attr = nodes, matrix.type = "edgelist", ignore.eval = FALSE, loops = T)
   
   return(list(
     #network= out_network, 
+    df = df,
+    tbl = tblall,
+    tbl_meta = tbl_meta,
     edges=edges, 
     links=links,
     edges2= edges2,
@@ -156,7 +162,7 @@ read_model <- function(fl         = "Data/in/flow diagrams/frame 8_aquacultre_1_
     nodes = nodes, 
     nodesVis = nodesVis,
     nodes_d3 = nodes_d3,
-    destinations = destinations, 
-    sources =sources ))
+    destinations = links$destination, 
+    sources =links$source ))
   
 }

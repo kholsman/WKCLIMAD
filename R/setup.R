@@ -5,26 +5,35 @@
 #'Kirstin.holsman@noaa.gov
 #'
 #'
-
  
   # Set switches for this code
   #----------------------------------------
-  update.data        <- TRUE
+  update.data         <- TRUE
+  update.network.data <- FALSE
   
   # Set up file paths
   #----------------------------------------
   data.in            <-  file.path("Data/in")
   data.out           <-  file.path("Data/out")
+  data.models        <-  file.path(data.out,"networkmodels")
+  outfile.fig        <-  file.path("Figs/")
   
-  if(!dir.exists(data.out))
-    dir.create(data.out)
-  if(!dir.exists(data.in))
-    dir.create(data.in)
+  if(!dir.exists(data.out))    dir.create(data.out)
+  if(!dir.exists(data.in))     dir.create(data.in)
+  if(!dir.exists(data.models)) dir.create(data.models)
+  if(!dir.exists(outfile.fig)) dir.create(outfile.fig)
   
-  outfile.fig         <-  file.path("Figs/")
-  
-  if(!dir.exists(outfile.fig)) 
-    dir.create(outfile.fig)
+  # globals:
+  #-------------------------------------------  
+  models <- c("Fish_1_1",
+              "Fish_1_2",
+              "Fish_1_3",
+              "Fish_2_1",
+              "Fish_2_2",
+              "Fish_2_3",
+              "Aqua_1_1",
+              "Aqua_1_2",
+              "Aqua_1_3")
   
   
   # plotting stuff:

@@ -4,57 +4,44 @@
 # kirstin.holsman@noaa.gov
 # updated 2021
 # ----------------------------------------
-
 lib_list <- c(
-  # these for reshaping and manipulating data:
-  #"ncdf4",
-  #"RODBC",
   "devtools",
-  "svMisc",
-  #"magrittr",
-  #"httr",
-  "reshape",
-  "reshape2",
+  # "svMisc",
+  # "reshape",
+  # "reshape2",
   "dplyr", 
-  "purrr",
+  # "purrr",
   "readxl", 
-  
-  # these for network plotting
   "visNetwork",
   "networkD3",
   "network" ,
   "tidyverse",
   "tidygraph",
   "ggraph",
-#  "usethis",
-  
-  # # these for ggplot mapping:
-  #   "raster",
-  #   "ggspatial",             # used for N arrow and scale bar 
-  #   "sf",                    # used for shapefiles
-  #   "rnaturalearth",         # has more shapefiles; used to make the "world" object 
-  #   "maps",                  # has some state shapefiles, need to be converted with st_as_sf
-  #   "akima",                 # Interpolation of Irregularly and Regularly Spaced Data
-  # 
-  
-  # markdown stuff:
-  "knitr",
-  "kableExtra",
-  
-  # These for making plots:
+  # "knitr",
+  # "kableExtra",
   "RColorBrewer",
-"stringr",
+  "viridis",
+  # "stringr",
   "ggplot2", 
-  "mgcv",
-  "cowplot",               # 
-  "wesanderson",
-  #"scales",
-  #"ggforce",
-  #"grid",
-  #"processx",
+  # "mgcv",
+  # "cowplot",               # 
+  # "wesanderson",
   "plotly",
-  "extrafont"
+  "extrafont",
+  "webshot",
+  "gdtools",
+  "hrbrthemes",
+  "shinyjs",
+  "magick"
+  # nefsc shiny
+  # "DiagrammeR","circlize",
+  #"QPress",
+  # "chorddiag", 
+  # "kableExtra", "googledrive",
+  # "DT"
 )
+
 
 # Install missing libraries:
 missing <- setdiff(lib_list, installed.packages()[, 1])
@@ -62,14 +49,27 @@ if (length(missing) > 0) install.packages(missing)
 
 # Load libraries:
 for(lib in lib_list)
-  eval(parse(text=paste("library(",lib,")")))
+  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
 
-# ## same for git libraries
-# lib_list_git <- c(
-#   #  "rnaturalearthhires",
-#   "thredds"
-# )
-# 
-# 
-# missing <- setdiff(lib_list_git, installed.packages()[, 1])
-# if (length(missing) > 0) devtools::install_github("bocinsky/thredds")
+missing <- setdiff("chorddiag", installed.packages()[, 1])
+if (length(missing) > 0) devtools::install_github("mattflor/chorddiag")
+# missing <- setdiff("bsselectR", installed.packages()[, 1])
+# if (length(missing) > 0) devtools::install_github("walkerke/bsselectR")
+# # Load libraries:
+# for(lib in c("chorddiag","bsselectR"))
+for(lib in c("chorddiag"))
+  suppressMessages(eval(parse(text=paste("library(",lib,")"))))
+
+#install QPress
+#install.packages(c("tcltk2", "XML", "devtools"))
+#devtools::install_github("SWotherspoon/QPress", build_vignettes = TRUE)
+#install chorddiag
+#devtools::install_github("mattflor/chorddiag")
+#install googlesheets4
+#devtools::install_github("tidyverse/googlesheets4")
+#install bsselectR
+#devtools::install_github("walkerke/bsselectR")
+
+
+
+
