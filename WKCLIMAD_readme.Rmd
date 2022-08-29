@@ -67,14 +67,16 @@ runGitHub( "WKCLIMAD", "kholsman")
 
 ```
 
+<!-- ![demographics map]('Figs/ChordPlot.html') -->
 <!-- ```{r sfint-shiny} -->
 <!-- knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/",  -->
 <!--   height = "900px") -->
 <!-- ``` -->
-
-
 ## 3. Chord Diagram
 
+```{r showChoro1,eval=T,echo=F}
+htmltools::includeHTML("Figs/ChordPlot.html")
+```
 <!-- ```{r showChoro1,echo=F} -->
 <!-- # All defaults -->
 <!-- htmltools::includeHTML("Figs/ChordPlot.html") -->

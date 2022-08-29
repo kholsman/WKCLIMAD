@@ -23,7 +23,8 @@ lib_list <- c(
   "RColorBrewer",
   "viridis",
   # "stringr",
-  "ggplot2", 
+  "ggplot2",
+  "treemapify",
   # "mgcv",
   # "cowplot",               # 
   # "wesanderson",

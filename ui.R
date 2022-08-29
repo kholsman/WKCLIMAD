@@ -4,8 +4,8 @@
 #
 #----------------------------------------
 # remember you have to put the libraries here! Can't load from the make.R
-
-library("shiny" )
+# 
+# library("shiny" )
 lib_list <- c(
   "devtools",
   # "svMisc",
@@ -26,6 +26,8 @@ lib_list <- c(
   "viridis",
   # "stringr",
   "ggplot2", 
+  
+  "treemapify",
   # "mgcv",
   # "cowplot",               # 
   # "wesanderson",
@@ -46,8 +48,8 @@ lib_list <- c(
 
 
 # Install missing libraries:
-missing <- setdiff(lib_list, installed.packages()[, 1])
-if (length(missing) > 0) install.packages(missing)
+# missing <- setdiff(lib_list, installed.packages()[, 1])
+# if (length(missing) > 0) install.packages(missing)
 
 # Load libraries:
 for(lib in lib_list)
@@ -119,6 +121,15 @@ shinyUI(fluidPage(
       visNetworkOutput("vis") #,height = 250)
     )
     ,
+    tabPanel(
+      div(icon("cog"), "tree"),
+      sliderInput("minSize", "Min freq",
+                  min = 0, max = 100, value = 1),
+      plotOutput("tree", click = "tClick"),
+     
+      fluidRow(
+        verbatimTextOutput("out_text")
+      ), DT::dataTableOutput("tdata")),
     tabPanel(
       div(icon("cog"), "Chord"),
       chorddiagOutput(outputId = "chord", height = 900),

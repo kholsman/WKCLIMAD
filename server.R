@@ -27,7 +27,7 @@
 # library("treemapify")
 # library("treemap")
 # #library(d3treeR)
-library("shiny" )
+# library("shiny" )
 lib_list <- c(
   "devtools",
   # "svMisc",
@@ -48,6 +48,7 @@ lib_list <- c(
   "viridis",
   # "stringr",
   "ggplot2", 
+  "treemapify",
   # "mgcv",
   # "cowplot",               # 
   # "wesanderson",
@@ -67,8 +68,8 @@ lib_list <- c(
 )
 
 # Install missing libraries:
-missing <- setdiff(lib_list, installed.packages()[, 1])
-if (length(missing) > 0) install.packages(missing)
+# missing <- setdiff(lib_list, installed.packages()[, 1])
+# if (length(missing) > 0) install.packages(missing)
 
 # Load libraries:
 for(lib in lib_list)
@@ -114,22 +115,30 @@ shinyServer(function(input, output, session){
                                     distIN =input$dist))) 
     network_vis   <- networks$vis
     network_force <- networks$force
-    # network_force <- radialNetwork(Links = mod$edges_d3, Nodes = mod$nodes_d3, Source = "from", Target = "to", 
-    #                               NodeID = "label", Group = "id", Value = "weight", 
-    #                               opacity = 1, fontSize = input$fontSize, zoom = TRUE)
-    # 
-    #radialNetwork(List = mod$nodes_d3, fontSize = 10, opacity = 0.9)
-    # sankey <- sankeyNetwork(Links = mod$edges_d3, Nodes = mod$nodes_d3, 
-    #                              Source = "from", Target = "to",NodeGroup = "group" ,
-    #                              NodeID = "label", Value = "weight", sinksRight=T,
-    #                              fontSize = input$fontSize, unit = "Letter(s)")
-    sankey <- suppressMessages(plot_Sankey(modlistIN = input$modlist, sinksRightIN= input$sinksRt,fontSizeIN=input$fontSize))
-    mod    <- networks$mod
-    chord  <- (suppressMessages(plot_chordDiag(input$modlist)))
+    sankey        <- suppressMessages(plot_Sankey(modlistIN = input$modlist, 
+                                                  sinksRightIN= input$sinksRt,
+                                                  fontSizeIN=input$fontSize))
+    mod           <- networks$mod
+    tree          <- suppressMessages(plot_tree(modlistIN = input$modlist,
+                               saveIT = F,
+                               minSize=input$minSize,
+                        fontSizeIN=input$fontSize/2))
+    tmapCoords    <- suppressWarnings(suppressMessages(tmapCoords(modlistIN = input$modlist,
+                                minSize=input$minSize,
+                                fontSizeIN=input$fontSize/2)))
+    tt<-tmapCoords%>%
+      select(plotID,ymax,ymin,xmin,xmax )%>%
+      mutate(area = (xmax-xmin)^2*(ymax-ymin)^2)
+    tmapCoords_prcnt<-tt%>%mutate(percent = 100*area/sum(tt$area))%>%select(plotID,percent)
+    
+    chord         <- (suppressMessages(plot_chordDiag(input$modlist)))
     return(list(mod              = mod,
                 network_vis      = network_vis,
                 network_force    = network_force,
-                sankey          = sankey,
+                sankey           = sankey,
+                tree             = tree,
+                tmapCoords       = tmapCoords,
+                tmapCoords_prcnt = tmapCoords_prcnt,
                 chord            = chord))
     
   })
@@ -211,7 +220,41 @@ output$force <- renderForceNetwork({
 # Source = "from", Source = "from", 
 # Value = "weight", NodeID = "label", 
 # Group = "id", opacity = 1, fontSize = 16, zoom = TRUE)
+output$tree <- renderPlot({
+  plotdat()$tree
+})
 
+output$tdata <- DT::renderDataTable(
+  out <- DT::datatable({
+   plotdat()$tmapCoords_prcnt
+  
+  })
+)
+
+output$out_text <- renderPrint({
+  if(length(input$tClick)==0){
+    0
+  }else{
+    input$tClick
+  plotdat()$tmapCoords%>%select(plotID,frequency,ymax,ymin,xmin,xmax )%>%
+    filter(xmin < input$tClick$x) %>%
+    filter(xmax > input$tClick$x) %>%
+    filter(ymin < input$tClick$y) %>%
+    filter(ymax > input$tClick$y)%>%select(plotID,frequency)
+  }
+})
+# observeEvent(input$tClick, {
+# 
+#   showModal(modalDialog(
+#     title = "Note",
+#     paste( plotdat()$tmapCoords%>%select(plotID,frequency,ymax,ymin,xmin,xmax )%>%
+#              filter(xmin < input$tClick$x) %>%
+#              filter(xmax > input$tClick$x) %>%
+#              filter(ymin < input$tClick$y) %>%
+#              filter(ymax > input$tClick$y)%>%select(plotID,frequency),collapse=" "),
+#     easyClose = T
+#   ))
+# })
 output$vis <- renderVisNetwork({
   plotdat()$network_vis
 })

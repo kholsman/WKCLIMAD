@@ -1,8 +1,8 @@
 # plot_treediag.R
 
 # # library# install.packages("treemapify")
-# library(treemapify)
-# library(treemap)
+library(treemapify)
+library(treemap)
 # library(d3treeR)
 # 
 # library(plotly)

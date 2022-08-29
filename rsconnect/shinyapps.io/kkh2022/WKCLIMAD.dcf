@@ -5,9 +5,10 @@ account: kkh2022
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6866133
-bundleId: 6246762
+bundleId: 6247246
 url: https://kkh2022.shinyapps.io/WKCLIMAD/
-when: 1661747312.51618
-lastSyncTime: 1661747312.51618
+when: 1661760984.74695
+lastSyncTime: 1661760984.74695
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: .gitattributes|BuildConsMod/rsconnect/shinyapps.io/kkh2022/buildWKCLIMAD.dcf|BuildConsMod/server.R|BuildConsMod/ui.R|nul|wkclimad_chord.html|WKCLIMAD_getStarted.md|WKCLIMAD_getStarted.pdf|WKCLIMAD_getStarted.Rmd|WKCLIMAD_getStarted.tex|WKCLIMAD_readme.html|WKCLIMAD_readme.md|WKCLIMAD_readme.pdf|WKCLIMAD_readme.Rmd|WKCLIMAD_readme.tex|Figs|notShared
