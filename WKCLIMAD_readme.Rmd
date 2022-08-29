@@ -2,22 +2,6 @@
 title: "WKCLIMAD Network Models"
 author: 
 output:
-  pdf_document:
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
-    toc: TRUE
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   html_document:
     includes:
       after_body: Figs/ChordPlot.html
@@ -26,11 +10,27 @@ output:
     theme: flatly
     toc: true
     toc_float: true
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
 
-source("R/make.R")       # loads packages, data, setup, etc.
+suppressMessages(suppressWarnings(source("R/make.R")  ))     # loads packages, data, setup, etc.
 knitr::opts_chunk$set(echo = T, fig.align="center")
 thisYr <- format(Sys.time(), "%Y")
 today  <- format(Sys.time(), "%b %d, %Y")
@@ -67,10 +67,10 @@ runGitHub( "WKCLIMAD", "kholsman")
 
 ```
 
-```{r sfint-shiny}
-knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/", 
-  height = "900px")
-```
+<!-- ```{r sfint-shiny} -->
+<!-- knitr::include_app("https://kkh2022.shinyapps.io/WKCLIMAD/",  -->
+<!--   height = "900px") -->
+<!-- ``` -->
 
 
 ## 3. Chord Diagram

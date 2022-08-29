@@ -16,11 +16,11 @@ of code into R().
 
 ## 3. Chord Diagram
 
-<!-- ```{r showChoro1,echo=F} -->
+```{r showChoro1,echo=F} -->
 <!-- # All defaults -->
-<!-- htmltools::includeHTML("Figs/ChordPlot.html") -->
+htmltools::includeHTML("Figs/ChordPlot.html") -->
 <!-- # include_graphics("Figs/ForcePlot.html") -->
-<!-- ``` -->
+``` -->
 
 ## 4. Force Diagram
 
