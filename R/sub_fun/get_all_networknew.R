@@ -4,7 +4,7 @@
 #'get_all_network.R
 #'
 
-get_all_networkold<-function(modlist){
+get_all_network<-function(modlist){
   
   
   links   <- links_all%>%filter(model%in%modlist)
@@ -17,9 +17,7 @@ get_all_networkold<-function(modlist){
     group_by(plotID,Category)%>%
     summarize(freq=length(plotID))%>%
     rowid_to_column("id")%>%
-    #arrange(Category, plotID)%>%
-    #mutate(plotID = factor(plotID,plotID))%>%
-    rename(lab = Category)%>%ungroup()
+    rename(lab = Category)
   
   # Create matrix [correct]
   m   <- links%>%
@@ -30,13 +28,10 @@ get_all_networkold<-function(modlist){
     rename(plot_dest = Plot_text, Category_dest=Category)%>%
     filter(!is.na(plot_dest))%>%
     left_join(by_category,by=c("plot_source"="plotID"))%>%
-    #arrange(lab, plot_source)%>%
     select(plot_source,plot_dest, value)%>% 
     rename(source = plot_source, destination=plot_dest)%>%
     group_by(source,destination)%>%
     summarize(mean =mean(value,na.rm=T))%>%
-    #mutate(ordr= as.numeric(  factor(source,levels=by_category$plotID)))%>%
-    #arrange(ordr)%>%
     select(source,destination,mean)%>%
     filter(!is.na(source))%>%rename(value=mean)%>%ungroup()
   
@@ -46,27 +41,7 @@ get_all_networkold<-function(modlist){
   m$IDsource      <- match(m$source, by_category$plotID)-1 
   m$IDdestination <- match(m$destination, by_category$plotID)-1
   
-  #edges <- data.frame(from = m$IDsource+1, to =m$IDsource)
-  
-  # create order for plotting
- # tmp <- data.frame(plotID = unique(c(m$source,m$destination)))%>%
-   #  tmp <-nodesa%>%
-   #  left_join(tbl, by=c("plotID"="plotID"))%>%
-   #  group_by(plotID,Category)%>%
-   #  summarize(freq=length(plotID))%>%
-   # # arrange(Category, plotID)%>%
-   #  #mutate(plotID = factor(plotID,plotID))%>%
-   #  mutate(lab = Category)%>%ungroup()
-  if(1==10){
-    tmp <- data.frame(plotID = unique(c(m$source,m$destination)))%>%
-      left_join(tbl, by=c("plotID"="plotID"))%>%
-      group_by(plotID,Category)%>%
-      summarize(freq=length(plotID))%>%
-     # arrange(Category, plotID)
-    tmp[which(tmp$plotID==tmp$plotID[duplicated(tmp$plotID)]),]
-  }
-  #nodes1 <- data.frame(plotID = unique(c(m$source,m$destination)))%>%
-    nodes1 <-by_category%>%
+  nodes1 <-by_category%>%
     left_join(tbl, by=c("plotID"="plotID"))%>%
     group_by(plotID,Category,Type)%>%
     mutate(Type  = factor(Type,c( "Sub-components",
@@ -75,27 +50,29 @@ get_all_networkold<-function(modlist){
                                   "Adaptation Measures Addressed")),
            typeN  = as.numeric(Type))%>%
     summarize(freq=length(plotID),level = round(mean(typeN)),0)%>%
-    #arrange(Category, plotID)%>%
    mutate( plotID2 = paste0(level,plotID),
-           plotID= factor(plotID,by_category$plotID),
+           #plotID= factor(plotID,by_category$plotID),
            lab    = Category,
-           label  = plotID,
-           IDnum  = as.numeric(plotID)-1)%>%
+           label  = plotID)%>%
+           #IDnum  = as.numeric(plotID)-1)%>%
     filter(!is.na(plotID))%>%ungroup()
   
- # nodes2 <- data.frame(plotID = unique(c(m$source,m$destination)))%>%
-    nodes2 <-by_category%>%
+  nodes1$id   <- match(nodes1$plotID, by_category$plotID)-1 
+  nodes2      <-by_category%>%
     left_join(tbl, by=c("plotID"="plotID"))%>%
     group_by(plotID,Category)%>%
     summarize(freq=length(plotID))%>%
     #arrange(Category, plotID)%>%
-    mutate(plotID = factor(plotID,by_category$plotID),
+    mutate(
+      #plotID = factor(plotID,by_category$plotID),
            lab    = Category,
-           label  = plotID,
-           IDnum  = as.numeric(plotID)-1)%>%
-    filter(!is.na(plotID))%>%ungroup()
-  
-  m <- m%>%left_join(by_category, by=c("source" = "plotID"))
+           label  = plotID)%>%
+             #IDnum  = as.numeric(plotID)-1)%>%
+    filter(!is.na(plotID))
+    
+    nodes2$id      <- match(nodes2$plotID, by_category$plotID)-1 
+    
+    m <- m%>%left_join(by_category, by=c("source" = "plotID"))
   
   
   # m <- m%>%mutate(source        = factor(source,tmp$plotID),
@@ -106,7 +83,7 @@ get_all_networkold<-function(modlist){
   cc           <- viridis_pal(alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
   nodes2$cols  <- cc(length(unique(nodes2$lab)))[as.numeric(as.factor(nodes2$lab))]
   nodes2$group <- as.numeric(as.factor(nodes2$lab))
-  nodes2$id    <- as.numeric(as.factor(nodes2$plotID))
+  #nodes2$id    <- as.numeric(as.factor(nodes2$plotID))
   
   edges     <- m%>%mutate(from=IDsource+1,to=IDdestination+1,label=source)
   nodes2    <- nodes2%>%mutate(group = Category)

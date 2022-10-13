@@ -14,13 +14,23 @@ plot_vis_network<-function(modlistIN,sinksRightIN = F,
                            dirIN ="LR"){
     
   
-    mm <- suppressMessages(get_all_network(modlistIN))
-    linksIN <- mm$links
-    nodesIN <- mm$nodes%>%mutate(font.size = fontSizeIN*3)
-    edgesIN <- mm$edges
-    nodes2IN<- mm$nodes_2
+  mm <- get_all_network(modlistIN)
+  linksIN <- mm$links
+  nodesIN <- mm$nodes_2
+  nodesIN$plotLab <- str_wrap(nodesIN$plotID, width = labW)
+  # 
+  # linksIN <- links_all%>%filter(model%in%modlistIN)
+  # nodesIN <- nodes_all%>%filter(model%in%modlistIN)
+  # 
+    #mm <- suppressMessages(get_all_network(modlistIN))
+    #linksIN <- mm$links
+    nodesIN <- nodesIN%>%mutate(font.size = fontSizeIN*3)
+    #edgesIN <- mm$edges
+    #nodes2IN<- mm$nodes_2
     
-    nodesIN  <- nodesIN%>%left_join(nodes2IN%>%group_by(plotID)%>%summarize(level = mean(level)), by = c("plotID"="plotID"))
+    nodesIN  <- nodesIN%>%left_join(nodes2IN%>%
+                                      group_by(plotID)%>%
+                                      summarize(level = mean(level)), by = c("plotID"="plotID"))
     v <- visNetwork(nodes=nodesIN, edges=edgesIN) %>% 
       visEdges(arrows = "middle")%>%
       visNodes(color = list(hover = "green")) %>%

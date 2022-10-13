@@ -27,6 +27,8 @@ library(viridis)
 library(visNetwork)
 library(webshot)
 library(chorddiag)
+library(stringr)
+library(ComplexHeatmap)
 # Install missing libraries:
 # missing <- setdiff(lib_list, installed.packages()[, 1])
 # if (length(missing) > 0) install.packages(missing)

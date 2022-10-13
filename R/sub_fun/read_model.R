@@ -12,8 +12,17 @@
 #' csv_file <- file.path("data/shiny",modlist[1])
 #' readxl::read_xlsx(path=file.path(
 #'  
+if(1==10){
+  fl         = "Data/in/flow diagrams/mentalmodels"
+  model   = models[6]
+  sizeIN     = 16
+  linkcolby  = "source"
+  NAval      = NA
+  lkup       = "../Day5_MetaData.xlsx"
+  lkup_Sheet_adapt ="meta_data"
+}
 read_model <- function(fl         = "Data/in/flow diagrams/mentalmodels",
-                       model   = "Fish_1_1",
+                       model      = "Fish_1_1",
                        sizeIN     = 16, 
                        linkcolby  = "source",
                        NAval      = NA,
@@ -23,7 +32,7 @@ read_model <- function(fl         = "Data/in/flow diagrams/mentalmodels",
   
 
   df <- read.csv(file.path(fl,paste0(model,".csv")), header=T)
-  colnames(df) <- df[,1]
+  colnames(df)[-1] <- df[,1]
   df[is.na(df)] <- NAval
   colnames(df)[1] <- "ID"
   
@@ -92,7 +101,8 @@ read_model <- function(fl         = "Data/in/flow diagrams/mentalmodels",
   
   tblall<-NA
   if(!is.null(lkup)){
-    tbl_meta <- na.omit(readxl::read_xlsx(path=file.path(fl,lkup),range = "A1:C500",
+    tbl_meta <- na.omit(readxl::read_xlsx(path=file.path(fl,lkup),
+                                          range = "A1:C500",
                                   sheet ="lkup_tables", col_names =T))
     tbl      <- readxl::read_xlsx(path=file.path(fl,lkup),
                                   sheet =lkup_Sheet_adapt, col_names =T)

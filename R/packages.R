@@ -34,9 +34,12 @@ lib_list <- c(
   "gdtools",
   "hrbrthemes",
   "shinyjs",
-  "magick"
+  "magick",
+  "stringr",
   # nefsc shiny
-  # "DiagrammeR","circlize",
+  # "DiagrammeR",
+ # "ComplexHeatmap",
+  "circlize"
   #"QPress",
   # "chorddiag", 
   # "kableExtra", "googledrive",
@@ -54,6 +57,14 @@ for(lib in lib_list)
 
 missing <- setdiff("chorddiag", installed.packages()[, 1])
 if (length(missing) > 0) devtools::install_github("mattflor/chorddiag")
+
+missing <- setdiff("ComplexHeatmap", installed.packages()[, 1])
+if (length(missing) > 0) devtools::install_github("jokergoo/ComplexHeatmap")
+
+
+
+
+
 # missing <- setdiff("bsselectR", installed.packages()[, 1])
 # if (length(missing) > 0) devtools::install_github("walkerke/bsselectR")
 # # Load libraries:

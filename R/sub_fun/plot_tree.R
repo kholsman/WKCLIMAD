@@ -5,18 +5,19 @@
 
 
 
-plot_tree<-function(modlistIN,saveIT = F,minSize=1,
+plot_tree<-function(modlistIN,saveIT = F,minSize=1,labW= 10,width = 10, height =4, dpi=400,
+                    file_name = "Figs/tree.jpg",
                            fontSizeIN = 5){
   
+  require(stringr)
+  mm              <- suppressMessages(get_all_network(modlistIN))
+  linksIN         <- mm$links
+  nodesIN         <- mm$nodes%>%mutate(fontSize=fontSizeIN*freq)%>%filter(freq>minSize)
+  edgesIN         <- mm$edges
+  nodes2IN        <- mm$nodes_2
+  nodesIN$plotLab <- str_wrap(nodesIN$plotID, width = labW)
   
-  mm <- suppressMessages(get_all_network(modlistIN))
-  linksIN <- mm$links
-  nodesIN <- mm$nodes%>%mutate(fontSize=fontSizeIN*freq)%>%filter(freq>minSize)
-  edgesIN <- mm$edges
-  nodes2IN<- mm$nodes_2
-
-  
-  p<-ggplot(nodesIN,aes(area = freq, fill = freq, label = plotID)) +
+  p<-ggplot(nodesIN,aes(area = freq, fill = freq, label=plotLab)) +
     geom_treemap() +
     geom_treemap_text(colour = c(rep("blue4",dim(nodesIN)[1])),
                       place = "centre",
@@ -26,18 +27,9 @@ plot_tree<-function(modlistIN,saveIT = F,minSize=1,
   if(saveIT){
     if(!dir.exists("Figs/Final")) 
     dir.create("Figs/Final")
-    ggsave(plot=p,filename="Figs/tree.jpg", scale=2,width = 8, height = 4, units="in", dpi = 400)}
+    ggsave(plot=p,filename=file_name, scale=2,width = width, height = height, units="in", 
+           dpi = dpi)}
   
    return(p)
-}
-tmapCoords <- function(modlistIN,fontSizeIN = 5,minSize=1) {
-  mm <- suppressMessages(get_all_network(modlistIN))
-  linksIN <- mm$links
-  nodesIN <- mm$nodes%>%mutate(fontSize=fontSizeIN*freq,frequency=freq)%>%filter(freq>minSize)
-  edgesIN <- mm$edges
-  nodes2IN<- mm$nodes_2
-  
-  treemapify(nodesIN, area = "freq", fill = "freq", label = "plotID", xlim = c(0, 1),
-             ylim = c(0, 1))
 }
 

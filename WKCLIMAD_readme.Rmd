@@ -82,6 +82,146 @@ htmltools::includeHTML("Figs/ChordPlot.html")
 <!-- htmltools::includeHTML("Figs/ChordPlot.html") -->
 <!-- # include_graphics("Figs/ForcePlot.html") -->
 <!-- ``` -->
+```{r plotChord,eval-F,echo=T}
+  
+  
+  suppressMessages(source("R/packages.R"))      # loads packages
+  suppressMessages(source("R/make.R"))
+  
+  
+  input            <- list()
+  input$modlist    <- models[6] 
+  input$sinksRt    <- FALSE
+  input$fontSize   <- 16
+  input$vis_layout <- "layout_with_sugiyama"
+  input$align_hier <- "no"
+  input$dist       <- 100
+  input$direction  <- "LR"
+  input$minSize    <- 1
+  input$labW = 20
+ networks     <-  suppressWarnings(suppressMessages(
+      plot_vis_network(
+                                    modlistIN = input$modlist,
+                                    fontSizeIN=input$fontSize,
+                                    layoutIN =input$vis_layout,
+                                    dirIN = input$direction,
+                                    align_hierIN = input$align_hier,
+                                    distIN =input$dist))) 
+ 
+ 
+ 
+ 
+    network_vis   <- networks$vis
+    network_force <- networks$force
+    sankey        <- suppressMessages(plot_Sankey(modlistIN = input$modlist, 
+                                                  sinksRightIN= input$sinksRt,
+                                                  fontSizeIN=input$fontSize))
+ network_force  # creates interactive network  
+ network_vis    # creates vis network interactively
+ sankey    # sankey diagram
+ 
+    mod           <- networks$mod
+    tree          <- suppressMessages(plot_tree(
+                               modlistIN  = input$modlist,
+                               saveIT     = F,
+                               labW       = input$labW,
+                               minSize    = input$minSize,
+                               fontSizeIN = input$fontSize/2))
+    tree
+    chord         <- (suppressMessages(plot_chordDiag(
+                           x           = input$modlist,
+                           labW        = 20,
+                           tblIN       = tbl,
+                           tbl_metaIN  = tbl_meta,
+                           links_allIN = links_all
+      )))
+    
+    tt    <- suppressWarnings(suppressMessages(tmapCoords(
+      modlistIN = input$modlist,
+      minSize=input$minSize,
+      fontSizeIN=input$fontSize/2)))
+    tt<-tt%>%
+      select(plotID,ymax,ymin,xmin,xmax )%>%
+      mutate(area = (xmax-xmin)^2*(ymax-ymin)^2)
+    tmapCoords_prcnt<-tt%>%
+      mutate(percent = 100*area/sum(tt$area))%>%
+      select(plotID,percent)
+    
+      plot_chordDiag2(x=models[6])
+    sclr <- 1
+    h <- 10*sclr
+    w <- 10*sclr
+    dpi <-350
+    png(filename = "Figs/Chord2_fish.png",res=dpi, width = w,height =h, units="in")
+    plot_chordDiag2(x=models[1:6])
+    dev.off()
+    
+      png(filename = "Figs/Chord2_aqua.png",res=dpi, width = w,height =h, units="in")
+    plot_chordDiag2(x=models[7:9])
+    dev.off()
+    
+    png(filename = "Figs/Chord2_all.png",res=dpi, width = w,height =h, units="in")
+    plot_chordDiag2(x=models)
+    dev.off()
+    
+    sclr <- .5
+    h <- 4*sclr
+    w <- 10*sclr
+    dpi <-350
+    suppressMessages(plot_tree(modlistIN = models[1:6], 
+                               file_name = "Figs/tree2_fish.png",
+                               saveIT = T,width = w, height =h, dpi=dpi,
+                               minSize=input$minSize,
+                        fontSizeIN=input$fontSize/2))
+    suppressMessages(plot_tree(modlistIN = models[6:9], 
+                               file_name = "Figs/tree2_aqua.png",
+                               saveIT = T,width = w, height =h, dpi=dpi,
+                               minSize=input$minSize,
+                        fontSizeIN=input$fontSize/2))
+    
+     suppressMessages(plot_tree(modlistIN = models, 
+                                file_name = "Figs/tree2_all.png",
+                               saveIT = T,width = w, height =h, dpi=dpi,
+                               minSize=input$minSize,
+                        fontSizeIN=input$fontSize/2))
+
+    
+    
+ 
+  #     
+  #      require(ComplexHeatmap)
+  # 
+  # 
+  # # # discrete
+  # # lgd_points = Legend(at = c("label1", "label2"), type = "points",
+  # #                     legend_gp = gpar(col = 2:3), title_position = "topleft",
+  # #                     title = "Track1")
+  # # # discrete
+  # lgd_lines = Legend(at = unique(meta_dat$lab), type = "lines",
+  #                    legend_gp = gpar(
+  #                      col = cc(length(unique(meta_dat$lab))), 
+  #                      fontsize = 6,
+  #                      lwd = 4), 
+  #                    title_position = "topleft",
+  #                    title = "Track2")
+  # # # continuous
+  # # lgd_links = Legend(at = c(-2, -1, 0, 1, 2), col_fun = cc,
+  # #                    title_position = "topleft", title = "Links")
+  # 
+  # #lgd_list_vertical = packLegend(lgd_points, lgd_lines, lgd_links)
+  # lgd_list_vertical = packLegend(lgd_lines)
+  # 
+  # draw(lgd_list_vertical, x = unit(4, "npc"), y = unit(100, "npc"), just = c("left", "bottom"))
+  # 
+  # # and a similar version of grid.draw
+  # pushViewport(viewport(x = unit(1, "npc"), y = unit(0, "npc"), just = c("left", "bottom")))
+  # grid.draw(lgd_lines)
+  # popViewport()
+  
+    
+  
+
+```
 
 ## 4. Force Diagram
 

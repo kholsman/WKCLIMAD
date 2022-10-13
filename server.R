@@ -28,6 +28,8 @@ library(viridis)
 library(visNetwork)
 library(webshot)
 library(chorddiag)
+library(stringr)
+library(ComplexHeatmap)
 # Install missing libraries:
 # missing <- setdiff(lib_list, installed.packages()[, 1])
 # if (length(missing) > 0) install.packages(missing)
@@ -86,13 +88,17 @@ shinyServer(function(input, output, session){
                                saveIT = F,
                                minSize=input$minSize,
                         fontSizeIN=input$fontSize/2))
-    tmapCoords    <- suppressWarnings(suppressMessages(tmapCoords(modlistIN = input$modlist,
-                                minSize=input$minSize,
-                                fontSizeIN=input$fontSize/2)))
-    tt<-tmapCoords%>%
+    
+    tt    <- suppressWarnings(suppressMessages(tmapCoords(
+      modlistIN  = input$modlist,
+      minSize    = input$minSize,
+      fontSizeIN = input$fontSize/2)))
+    tt<-tt%>%
       select(plotID,ymax,ymin,xmin,xmax )%>%
       mutate(area = (xmax-xmin)^2*(ymax-ymin)^2)
-    tmapCoords_prcnt<-tt%>%mutate(percent = 100*area/sum(tt$area))%>%select(plotID,percent)
+    tmapCoords_prcnt<-tt%>%
+      mutate(percent = 100*area/sum(tt$area))%>%
+      select(plotID,percent)
     
     chord         <- (suppressMessages(plot_chordDiag(input$modlist)))
     return(list(mod              = mod,
